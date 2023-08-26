@@ -1,19 +1,52 @@
-import { Application, Sprite } from 'pixi.js'
+import { Application , Assets} from 'pixi.js'
 
 const app = new Application({
 	view: document.getElementById("pixi-canvas") as HTMLCanvasElement,
 	resolution: window.devicePixelRatio || 1,
 	autoDensity: true,
 	backgroundColor: 0x6495ed,
-	width: 640,
-	height: 480
+	width: 1280,
+	height: 720
 });
 
-const clampy: Sprite = Sprite.from("clampy.png");
+window.addEventListener("resize", ()=> {
+	console.log("resized!");
+	const scaleX = window.innerWidth / app.screen.width;
+	const scaleY = window.innerHeight / app.screen.height;
+	const scale = Math.min(scaleX, scaleY);
 
-clampy.anchor.set(0.5);
+	const screenWidth = Math.round(app.screen.width * scale);
+	const screenHeight = Math.round(app.screen.height * scale);
 
-clampy.x = app.screen.width / 2;
-clampy.y = app.screen.height / 2;
+	const marginHorizontal = Math.floor((window.innerWidth - screenWidth) / 2);
+	const marginVertical = Math.floor((window.innerHeight - screenHeight) / 2);
 
-app.stage.addChild(clampy);
+	app.view.style!.width = screenWidth + "px";
+	app.view.style!.height = screenHeight + "px";
+
+	(app.view.style as any).marginLeft = marginHorizontal + "px";
+	(app.view.style as any).marginRight = marginHorizontal + "px";
+
+	(app.view.style as any).marginTop = marginVertical + "px";
+	(app.view.style as any).marginBottom = marginVertical + "px";   
+});
+
+
+Assets.addBundle("Skater", assets);
+Assets.addBundle("SkateAnim", assets);
+Assets.addBundle("Mosquito", assets);
+
+import { assets } from './assets';
+import { Skater } from './Types/Personaje';
+import { Mosco } from './Types/SP_Mosquito';
+
+
+Assets.load(["Skater1", "Skater2", "Skater3", "Skater4", "Skater5", "Skate1", "Skate2", "Skate3", "Skate4", "Mosco1", "Mosco2", "Mosco3", "Mosco4", "Mosco5", "Mosco6"]).then(()=>{
+
+	const Skater0: Skater= new Skater();
+	const p_mosco : Mosco = new Mosco();
+
+	app.stage.addChild(p_mosco);
+	app.stage.addChild(Skater0);
+    
+});
