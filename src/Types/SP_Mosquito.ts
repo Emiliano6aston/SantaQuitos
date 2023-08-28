@@ -1,4 +1,4 @@
-import { AnimatedSprite, Sprite, Texture, Ticker} from "pixi.js";
+import { AnimatedSprite, Sprite, Texture} from "pixi.js";
 
 export class Mosco extends Sprite{
     AMosco: AnimatedSprite;
@@ -15,17 +15,17 @@ export class Mosco extends Sprite{
         ], true);
 
         AMosco.animationSpeed = 1.0;
-        AMosco.position.y = 300
+        AMosco.position.x = 1300;
+        AMosco.position.y = 300;
 
         this.AMosco = AMosco;
         this.addChild(this.AMosco);
-        Ticker.shared.add(this.update, this);
     }
 
-    public update(_deltaTime: number, _deltaFrame?: number): void {
-        this.time += _deltaTime;
-        this.AMosco.position.x += 0.5 * _deltaTime;
-        this.AMosco.position.y += _deltaTime * 1 * Math.sin(this.time * 0.01 );
+    public update(deltaTime: number, _deltaFrame: number): void {
+        this.time += deltaTime;
+        this.AMosco.position.x -= 0.5 * deltaTime;
+        this.AMosco.position.y += deltaTime * 1 * Math.sin(this.time * 0.01 );
         this.AMosco.play();
     }
 }
