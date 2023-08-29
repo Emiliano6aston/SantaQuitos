@@ -42,16 +42,11 @@ Assets.addBundle("SkateAnim", assets);
 Assets.addBundle("Mosquito", assets);
 
 import { assets } from './assets';
-//import { Skater } from './Types/Personaje';
 import { MainScene} from './Scenes/MainScene';
 import { Keyboard } from './Types/Keyboard';
-//import { Mosco } from './Types/SP_Mosquito';
 
 
-Assets.load(["Skater1", "Skater2", "Skater3", "Skater4", "Skater5", "Skate1", "Skate2", "Skate3", "Skate4", "Mosco1", "Mosco2", "Mosco3", "Mosco4", "Mosco5", "Mosco6"]).then(()=>{
-
-	//const p_mosco : Mosco = new Mosco();
-	//app.stage.addChild(p_mosco);
+Assets.load(["Skater1", "Skater2", "Skater3", "Skater4", "Skater5", "Skate1", "Skate2", "Skate3", "Skate4", "Mosco1", "Mosco2", "Mosco3", "Mosco4", "Mosco5", "Mosco6", "Banco1", "Baldosas1", "Builds1", "Asfalto1", "Cesped1"]).then(()=>{
 
 	const OMainScene : MainScene = new MainScene();
 	app.stage.addChild(OMainScene);
@@ -59,5 +54,4 @@ Assets.load(["Skater1", "Skater2", "Skater3", "Skater4", "Skater5", "Skate1", "S
 	Ticker.shared.add( function (_deltaFrame){
 		OMainScene.update(Ticker.shared.deltaMS, _deltaFrame);
 	})
-    
 });

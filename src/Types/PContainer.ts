@@ -5,6 +5,8 @@ export class PContainer extends Container{
     public speed : Point = new Point();
     public accel : Point = new Point();
     public onGround : boolean = false;
+    public onPlat : boolean = false;
+    public jumping : boolean = false;
 
     public update(deltaTime : number, _deltaFrame : number){
         this.x += this.speed.x * deltaTime + 1/2 * this.accel.x * deltaTime * deltaTime;

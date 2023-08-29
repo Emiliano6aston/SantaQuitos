@@ -31,4 +31,13 @@ export const assets = {
      Mosco4: "./Mosquito/mosco3.png",
      Mosco5: "./Mosquito/mosco4.png",
      Mosco6: "./Mosquito/mosco5.png",
+
+     //Objetos
+     Banco1: "./Objetos/BancoSantaFeLarge.png",
+
+     //Fondos
+     Baldosas1: "./Fondos/Baldosas.png",
+     Builds1: "./Fondos/Buildings.png",
+     Asfalto1: "./Fondos/Asfalto.png",
+     Cesped1: "./Fondos/Cesped.png",
 };
