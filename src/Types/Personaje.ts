@@ -131,7 +131,6 @@ export class Skater extends PContainer implements IHitbox{
             this.removeChild(this.AS_Jump);
             this.addChild(this.AS_Grind);
         }
-
     }
 
     private onJump():void{
