@@ -6,6 +6,7 @@ export class PContainer extends Container{
     public accel : Point = new Point();
     public onGround : boolean = false;
     public onPlat : boolean = false;
+    public onGrind : boolean = false;
     public jumping : boolean = false;
 
     public update(deltaTime : number, _deltaFrame : number){

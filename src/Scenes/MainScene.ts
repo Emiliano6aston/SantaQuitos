@@ -110,6 +110,7 @@ export class MainScene extends Container implements IUpdate{
             this.Skater1.onGround = true;
             this.Skater1.onPlat = false;
             this.Skater1.jumping = false;
+            this.Skater1.onGrind = false;
             this.Skater1.scale.set(1);
         }else{
             this.Skater1.accel.y = this.gravedad;
