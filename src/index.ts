@@ -47,10 +47,8 @@ import { Keyboard } from './Types/Keyboard';
 
 
 //Assets.load(["Skater1", "Skater2", "Skater3", "Skater4", "Skater5", "Skate1", "Skate2", "Skate3", "Skate4", "Mosco1", "Mosco2", "Mosco3", "Mosco4", "Mosco5", "Mosco6", "Banco1", "Baldosas1", "Builds1", "Asfalto1", "Cesped1"]).then(()=>{
-Assets.load(["SkateAnim0", "SkateAnim1", "SkateAnim2", "SkateAnim3", "SkateAnim4", "SkateAnim5", "SkateAnim6", "SkateAnim7", "SkateAnim8", "SkateAnim9", "SkateAnim10", "SkateAnim11", "Mosco1", "Mosco2", "Mosco3", "Mosco4", "Mosco5", "Mosco6", "Banco1", "Baldosas1", "Builds1", "Asfalto1", "Cesped1"]).then(()=>{
-
+Assets.load(["SkateAnim0", "SkateAnim1", "SkateAnim2", "SkateAnim3", "SkateAnim4", "SkateAnim5", "SkateAnim6", "SkateAnim7", "SkateAnim8", "SkateAnim9", "SkateAnim10", "SkateAnim11", "Mosco1", "Mosco2", "Mosco3", "Mosco4", "Mosco5", "Mosco6", "Banco1", "Baldosas1", "Builds1", "Asfalto1", "Cesped1", "SantaFe1"]).then(()=>{
 	
-
 	const OMainScene : MainScene = new MainScene();
 	app.stage.addChild(OMainScene);
 

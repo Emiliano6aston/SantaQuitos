@@ -53,4 +53,7 @@ export const assets = {
      Builds1: "./Fondos/Buildings.png",
      Asfalto1: "./Fondos/Asfalto.png",
      Cesped1: "./Fondos/Cesped.png",
+
+     //Sounds
+     SantaFe1: "./MusicSound/Cerveza Santa Fe - Himno (Yo soy de Santa Fe) (320 kbps).mp3",
 };

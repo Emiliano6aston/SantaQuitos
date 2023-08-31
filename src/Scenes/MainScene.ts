@@ -5,6 +5,7 @@ import { Banco } from "../Types/Banco";
 import { WX,WY } from "..";
 import { checkCollision } from "../Types/Interfaces/IHitbox";
 import { Mosco } from "../Types/SP_Mosquito";
+import { sound } from "@pixi/sound";
 
 
 export class MainScene extends Container implements IUpdate{
@@ -70,6 +71,12 @@ export class MainScene extends Container implements IUpdate{
 
         this.p_mosco = new Mosco();
         this.addChild(this.p_mosco);
+
+        //Sounds
+        const SF = sound.find("SantaFe1");
+
+        SF.volume = 0.1;
+        SF.play();
     }
 
     public update(deltaTime : number, deltaFrame : number) : void{
