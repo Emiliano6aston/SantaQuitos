@@ -1,16 +1,16 @@
 import { Container, Graphics, Rectangle, Sprite } from "pixi.js";
 import { IHitbox } from "./Interfaces/IHitbox";
 
-export class Banco extends Container implements IHitbox{
+export class BolaT extends Container implements IHitbox{
     hitbox: Graphics;
     Visual: Sprite;
     nombre: string;
     constructor(){
         super();
 
-        this.nombre = "Banco";
+        this.nombre = "Bola";
 
-        this.Visual = Sprite.from("Banco1");
+        this.Visual = Sprite.from("Bola1");
         this.Visual.anchor.set(0.5);
         this.addChild(this.Visual);
 

@@ -1,14 +1,21 @@
 import { Container, Texture, TilingSprite } from "pixi.js";
-import { IUpdate } from "../Types/Interfaces/IUpdate";
+import { Emitter, upgradeConfig } from "@pixi/particle-emitter";
+import { sound } from "@pixi/sound";
+import { checkCollision } from "../Types/Interfaces/IHitbox";
+import * as mosParticle from "../mosquitos.json";
 import { Skater } from "../Types/Personaje";
 import { Banco } from "../Types/Banco";
-import { WX,WY } from "..";
-import { checkCollision } from "../Types/Interfaces/IHitbox";
-import { Mosco } from "../Types/SP_Mosquito";
-import { sound } from "@pixi/sound";
+import { Fuente } from "../Types/Fuente";
+import { Pilar } from "../Types/Pilar";
+import { Bicic } from "../Types/Bicic";
+import { BolaT } from "../Types/BolaTransito";
+import { SceneBase } from "./SceneBase";
+import { SceneManager } from "./SceneManager";
+import { IUpdate } from "../Types/Interfaces/IUpdate";
 
 
-export class MainScene extends Container implements IUpdate{
+
+export class MainScene extends SceneBase implements IUpdate{
 
     private Skater1 : Skater;
     private ground : number;
@@ -21,7 +28,9 @@ export class MainScene extends Container implements IUpdate{
     bg2: TilingSprite;
     bg3: TilingSprite;
     bg4: TilingSprite;
-    p_mosco: any;
+    moscos: Emitter;
+    contMoscos: Container;
+    SF: any;
 
     constructor(){
         super();
@@ -30,21 +39,26 @@ export class MainScene extends Container implements IUpdate{
         this.gravedad = 0.004;
         this.worldspeed = 0.5;
 
+        this.contMoscos = new Container();
+        
+
+        this.moscos = new Emitter(this.contMoscos, upgradeConfig(mosParticle, Texture.from("Mosco1")));
+
         //Fondo
-        this.bg0 = new TilingSprite(Texture.from("Builds1"), WX,WY);
+        this.bg0 = new TilingSprite(Texture.from("Builds1"), SceneManager.WX,SceneManager.WY);
         this.bg0.position.y = -260;
         this.addChild(this.bg0);
 
-        this.bg1 = new TilingSprite(Texture.from("Asfalto1"), WX, 128);
+        this.bg1 = new TilingSprite(Texture.from("Asfalto1"), SceneManager.WX, 128);
         this.bg1.position.y = 480;
 
-        this.bg2 = new TilingSprite(Texture.from("Cesped1"), WX, 64);
+        this.bg2 = new TilingSprite(Texture.from("Cesped1"), SceneManager.WX, 64);
         this.bg2.position.y = 420;
 
-        this.bg4 = new TilingSprite(Texture.from("Cesped1"), WX, 64);
+        this.bg4 = new TilingSprite(Texture.from("Cesped1"), SceneManager.WX, 64);
         this.bg4.position.y = 570;
 
-        this.bg3 = new TilingSprite(Texture.from("Baldosas1"), WX, 128);
+        this.bg3 = new TilingSprite(Texture.from("Baldosas1"), SceneManager.WX, 128);
         this.bg3.position.y = 592;
 
         this.addChild(this.bg2);
@@ -65,23 +79,60 @@ export class MainScene extends Container implements IUpdate{
         banco2.position.y = this.ground;
         this.addChild(banco2);
         this.bancos.push(banco2);
+
+        const fuente1 = new Fuente();
+        fuente1.position.x = 1500;
+        fuente1.position.y = this.ground - 100;
+        this.addChild(fuente1);
+        this.bancos.push(fuente1);
+
+        const bicic1 = new Bicic();
+        bicic1.position.x = 750;
+        bicic1.position.y = this.ground - 16;
+        this.addChild(bicic1);
+        this.bancos.push(bicic1);
         
+        const bola1 = new BolaT();
+        bola1.position.x = 100;
+        bola1.position.y = this.ground - 16;
+        this.addChild(bola1);
+        this.bancos.push(bola1);
+
         this.Skater1 = new Skater();
         this.addChild(this.Skater1);
 
-        this.p_mosco = new Mosco();
-        this.addChild(this.p_mosco);
+        const pilar1 = new Pilar();
+        pilar1.scale.set(0.75);
+        pilar1.position.x = 2000;
+        pilar1.position.y = this.ground + 64;
+        this.addChild(pilar1);
+        this.bancos.push(pilar1);
+
+        this.contMoscos.position.set(SceneManager.WX+100,this.ground);
+        this.addChild(this.contMoscos);
+
+        // this.p_mosco = new Mosco();
+        // this.addChild(this.p_mosco);
 
         //Sounds
-        const SF = sound.find("SantaFe1");
+        this.SF = sound.find("SantaFe1");
 
-        SF.volume = 0.1;
-        SF.play();
+        this.SF.volume = 0.1;
+        this.SF.play();
     }
 
     public update(deltaTime : number, deltaFrame : number) : void{
 
-        this.p_mosco.update();
+        this.moscos.update(deltaFrame/100);
+        this.contMoscos.position.x -= 0.1 * deltaTime; 
+
+        if (this.Skater1.position.x > this.contMoscos.position.x -3 && this.Skater1.position.x < this.contMoscos.position.x +3){
+            if(this.Skater1.position.y > this.contMoscos.position.y){
+                this.removeFromParent();
+                this.SF.volume = 0;
+            }
+        }
+        if (this.contMoscos.position.x < 0) this.contMoscos.position.x = SceneManager.WX + 100;
 
         //CheckCollisions
         for (let B of this.bancos){
@@ -126,10 +177,10 @@ export class MainScene extends Container implements IUpdate{
 
         //Center on mid horizontal
         if (this.Skater1.NOC && this.Skater1.onGround){
-            if (this.Skater1.position.x > (WX/2 + 3)){
+            if (this.Skater1.position.x > (SceneManager.WX/2 + 3)){
                 this.Skater1.speed.x = -0.3;
             }else{
-                if (this.Skater1.position.x <= (WX/2 - 3)){
+                if (this.Skater1.position.x <= (SceneManager.WX/2 - 3)){
                     this.Skater1.speed.x = 0.3;
                 }else{
                     this.Skater1.speed.x = 0;
@@ -137,7 +188,7 @@ export class MainScene extends Container implements IUpdate{
             }
         }
 
-        if (this.Skater1.position.x > WX || this.Skater1.position.x < 16){
+        if (this.Skater1.position.x > SceneManager.WX || this.Skater1.position.x < 16){
 
             if (this.Skater1.position.x < 16) this.Skater1.position.x = 17;
 

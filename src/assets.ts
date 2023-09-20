@@ -39,14 +39,18 @@ export const assets = {
  
      //Mosquito
      Mosco1: "./Mosquito/mosco0.png",
-     Mosco2: "./Mosquito/mosco1.png",
-     Mosco3: "./Mosquito/mosco2.png",
-     Mosco4: "./Mosquito/mosco3.png",
-     Mosco5: "./Mosquito/mosco4.png",
-     Mosco6: "./Mosquito/mosco5.png",
+     // Mosco2: "./Mosquito/mosco1.png",
+     // Mosco3: "./Mosquito/mosco2.png",
+     // Mosco4: "./Mosquito/mosco3.png",
+     // Mosco5: "./Mosquito/mosco4.png",
+     // Mosco6: "./Mosquito/mosco5.png",
 
      //Objetos
      Banco1: "./Objetos/BancoSantaFeLarge.png",
+     Fuente1: "./Objetos/Fuente25_s.png",
+     Pilar1: "./Objetos/Pilar1.png",
+     Bicic1: "./Objetos/Bicicletero.png",
+     Bola1: "./Objetos/BolaTransito.png",
 
      //Fondos
      Baldosas1: "./Fondos/Baldosas.png",
