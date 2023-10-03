@@ -1,4 +1,4 @@
-import { Assets} from 'pixi.js'
+import { Assets, Ticker} from 'pixi.js'
 import { MainScene } from './Scenes/MainScene';
 
 Assets.addBundle("Skater", assets);
@@ -14,5 +14,9 @@ Assets.load(["SkateAnim0", "SkateAnim1", "SkateAnim2", "SkateAnim3", "SkateAnim4
 	
 	SceneManager.initialize();
 	SceneManager.changeScene(OMainScene);
-	SceneManager.update();
+	Ticker.shared.add(function (deltaFrame){
+		SceneManager.update(Ticker.shared.deltaMS, deltaFrame);
+	})
+	
 });
+

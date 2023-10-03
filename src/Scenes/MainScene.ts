@@ -11,11 +11,9 @@ import { Bicic } from "../Types/Bicic";
 import { BolaT } from "../Types/BolaTransito";
 import { SceneBase } from "./SceneBase";
 import { SceneManager } from "./SceneManager";
-import { IUpdate } from "../Types/Interfaces/IUpdate";
 
 
-
-export class MainScene extends SceneBase implements IUpdate{
+export class MainScene extends SceneBase{
 
     private Skater1 : Skater;
     private ground : number;
@@ -40,13 +38,13 @@ export class MainScene extends SceneBase implements IUpdate{
         this.worldspeed = 0.5;
 
         this.contMoscos = new Container();
-        
-
         this.moscos = new Emitter(this.contMoscos, upgradeConfig(mosParticle, Texture.from("Mosco1")));
 
         //Fondo
         this.bg0 = new TilingSprite(Texture.from("Builds1"), SceneManager.WX,SceneManager.WY);
-        this.bg0.position.y = -260;
+        this.bg0.position.y = -256;
+        this.bg0.scale.x = 1.0;
+        this.bg0.scale.y = 1.0;
         this.addChild(this.bg0);
 
         this.bg1 = new TilingSprite(Texture.from("Asfalto1"), SceneManager.WX, 128);
@@ -152,7 +150,9 @@ export class MainScene extends SceneBase implements IUpdate{
         }
 
         //World and background
-        this.bg0.tilePosition.x -= 0.5 * this.worldspeed * deltaTime;
+        //Building
+        this.bg0.tilePosition.x -= 0.005 * this.worldspeed * deltaTime;
+        //Fondo
         this.bg1.tilePosition.x -= 0.75 * this.worldspeed * deltaTime;
         this.bg2.tilePosition.x -= 0.75 * this.worldspeed * deltaTime;
         this.bg3.tilePosition.x -= this.worldspeed * deltaTime;

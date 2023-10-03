@@ -54,7 +54,7 @@ export const assets = {
 
      //Fondos
      Baldosas1: "./Fondos/Baldosas.png",
-     Builds1: "./Fondos/Buildings.png",
+     Builds1: "./Fondos/Parque.png",
      Asfalto1: "./Fondos/Asfalto.png",
      Cesped1: "./Fondos/Cesped.png",
 

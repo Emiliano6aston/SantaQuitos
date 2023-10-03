@@ -59,7 +59,7 @@ export namespace SceneManager{
         app.stage.addChild(currentScene);
     }
 
-    function update(deltaFrame:number, _deltaTime:number ){
+    export function update(deltaFrame:number, _deltaTime:number ){
           currentScene?.update(deltaFrame, Ticker.shared.elapsedMS);
      }
 }
