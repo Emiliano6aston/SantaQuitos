@@ -1,7 +1,9 @@
-import { Container, Graphics, Rectangle, Sprite } from "pixi.js";
+import { Graphics, Rectangle, Sprite } from "pixi.js";
 import { IHitbox } from "./Interfaces/IHitbox";
+import { SceneManager } from "../Scenes/SceneManager";
+import { Obstaculo } from "./MapMaker";
 
-export class Bicic extends Container implements IHitbox{
+export class Bicic extends Obstaculo implements IHitbox{
     hitbox: Graphics;
     Visual: Sprite;
     nombre: string;
@@ -15,12 +17,14 @@ export class Bicic extends Container implements IHitbox{
         this.addChild(this.Visual);
 
         this.hitbox = new Graphics();
-        this.hitbox.beginFill(0xFF00FF, 0.01);
+        this.hitbox.beginFill(0xFF00FF, SceneManager.showHitBox);
         this.hitbox.drawRect(16,-48,160,96);
         this.hitbox.endFill();
         this.hitbox.x = -96;
         this.hitbox.y = -8;
         this.addChild(this.hitbox);
+
+        this.tipo = 2;
 
     }
 

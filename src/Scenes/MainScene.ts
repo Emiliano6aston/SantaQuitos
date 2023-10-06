@@ -11,16 +11,17 @@ import { Bicic } from "../Types/Bicic";
 import { BolaT } from "../Types/BolaTransito";
 import { SceneBase } from "./SceneBase";
 import { SceneManager } from "./SceneManager";
+import { MapMaker } from "../Types/MapMaker";
 
 
 export class MainScene extends SceneBase{
 
     private Skater1 : Skater;
     private ground : number;
-    private gravedad: number;
+    private gravity: number;
     worldspeed: number;
 
-    private bancos: Banco[];
+    //private Mapa: MapMaker;
     bg0:TilingSprite;
     bg1: TilingSprite;
     bg2: TilingSprite;
@@ -29,12 +30,13 @@ export class MainScene extends SceneBase{
     moscos: Emitter;
     contMoscos: Container;
     SF: any;
+    bancos: never[];
 
     constructor(){
         super();
         //Constantes
         this.ground = 600;
-        this.gravedad = 0.004;
+        this.gravity = 0.004;
         this.worldspeed = 0.5;
 
         this.contMoscos = new Container();
@@ -64,7 +66,11 @@ export class MainScene extends SceneBase{
         this.addChild(this.bg4);
         this.addChild(this.bg3);
 
+
         //Obstaculos
+
+        //this.Mapa = new MapMaker();
+
         this.bancos = [];
         const banco1 = new Banco();
         banco1.position.x = 500;
@@ -98,6 +104,10 @@ export class MainScene extends SceneBase{
 
         this.Skater1 = new Skater();
         this.addChild(this.Skater1);
+        //Seteamos los atributos globales en la clase skater
+        this.Skater1.gravity = this.gravity;
+        this.Skater1.ground = this.ground;
+        this.Skater1.worldspeed = this.worldspeed;
 
         const pilar1 = new Pilar();
         pilar1.scale.set(0.75);
@@ -134,16 +144,17 @@ export class MainScene extends SceneBase{
 
         //CheckCollisions
         for (let B of this.bancos){
+            // if (c != null && (this.Skater1.JumpIn || this.Skater1.JumpOut) ){
+            //     this.Skater1.position.y -= c.height - 1;
+            //     this.Skater1.speed.y = 0;
+            // };
+
             //check collisions
             const c = checkCollision(this.Skater1 , B);
-            if (c != null && this.Skater1.speed.y > 0){
-                this.Skater1.position.y -= c.height - 1;
-                this.Skater1.speed.y = 0;
-                this.Skater1.onPlat = true;
-            };
-
+            if (c != null) this.Skater1.checkCollision(c, B);
+            
+            //Physics
             B.position.x -= this.worldspeed * deltaTime;
-
             if (B.position.x < -720){
                 B.position.x = 1500;
             }
@@ -162,37 +173,36 @@ export class MainScene extends SceneBase{
         this.Skater1.update(deltaTime, deltaFrame);
 
         //Jump and gravity
-        if (this.Skater1.position.y >= this.ground){
-            this.Skater1.speed.y = 0;
-            this.Skater1.accel.y = 0;
-            this.Skater1.onGround = true;
-            this.Skater1.onPlat = false;
-            this.Skater1.jumping = false;
-            this.Skater1.onGrind = false;
-            this.Skater1.scale.set(1);
-        }else{
-            this.Skater1.accel.y = this.gravedad;
-            this.Skater1.onGround = false;
-        }
+        // if (this.Skater1.position.y >= this.ground){
+        //     this.Skater1.speed.y = 0;
+        //     this.Skater1.accel.y = 0;
+        //     this.Skater1.onGround = true;
+        //     this.Skater1.onPlat = false;
+        //     this.Skater1.JumpIn = false;
+        //     this.Skater1.JumpOut = false;
+        // }else{
+        //     this.Skater1.accel.y = this.gravity;
+        //     this.Skater1.onGround = false;
+        // }
 
         //Center on mid horizontal
-        if (this.Skater1.NOC && this.Skater1.onGround){
-            if (this.Skater1.position.x > (SceneManager.WX/2 + 3)){
-                this.Skater1.speed.x = -0.3;
-            }else{
-                if (this.Skater1.position.x <= (SceneManager.WX/2 - 3)){
-                    this.Skater1.speed.x = 0.3;
-                }else{
-                    this.Skater1.speed.x = 0;
-                }
-            }
-        }
+        // if (this.Skater1.NOC && this.Skater1.onGround){
+        //     if (this.Skater1.position.x > (SceneManager.WX/2 + 3)){
+        //         this.Skater1.speed.x = -0.3;
+        //     }else{
+        //         if (this.Skater1.position.x <= (SceneManager.WX/2 - 3)){
+        //             this.Skater1.speed.x = 0.3;
+        //         }else{
+        //             this.Skater1.speed.x = 0;
+        //         }
+        //     }
+        // }
 
         if (this.Skater1.position.x > SceneManager.WX || this.Skater1.position.x < 16){
 
             if (this.Skater1.position.x < 16) this.Skater1.position.x = 17;
 
-            this.Skater1.NOC = true;
+            this.Skater1.centered = true;
         }
     }
 }

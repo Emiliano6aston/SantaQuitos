@@ -1,10 +1,12 @@
 import { Rectangle } from "pixi.js";
 
 export interface IHitbox{
+    height: number;
     getHitbox():Rectangle;
 }
 
 export function checkCollision(objA:IHitbox, objB:IHitbox):Rectangle | void{
+
     const rA = objA.getHitbox();
     const rB = objB.getHitbox();
 

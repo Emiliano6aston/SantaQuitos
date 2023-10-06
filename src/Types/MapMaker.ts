@@ -1,3 +1,4 @@
+import { Container } from "pixi.js";
 
 
 export class MapMaker{
@@ -11,13 +12,18 @@ export class MapMaker{
 
 }
 
-export class Obstaculo{
+export class Obstaculo extends Container{
     activo : boolean = true;
     puntaje : number = 0;
-    tipo : number = 0; //0 = ninguno
+    tipo : number = 1; //0 = pj | 1 = plataforma | 2 = obstaculo | 3 = mosquitos
+    speed: number = 0.1;
     constructor(){
-
-        //Se podría hacer random al crear entre los tipos definidos en este nivel
+        super();
         
     }
+
+    private spawn(wx:number):void{
+        this.position.x = wx;
+    }
+
 }

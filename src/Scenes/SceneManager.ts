@@ -8,6 +8,7 @@ export namespace SceneManager{
 
     export const WX = 1280;
     export const WY = 720;
+    export const showHitBox = 0.5;
 
     export function initialize(){
         if (app != undefined){
@@ -45,7 +46,7 @@ export namespace SceneManager{
             (app.view.style as any).marginRight = marginHorizontal + "px";
         
             (app.view.style as any).marginTop = marginVertical + "px";
-            (app.view.style as any).marginBottom = marginVertical + "px";   
+            (app.view.style as any).marginBottom = marginVertical + "px";
         });
 
         window.dispatchEvent(new Event("resize"));
