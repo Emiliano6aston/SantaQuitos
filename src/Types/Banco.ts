@@ -20,7 +20,6 @@ export class Banco extends Obstaculo{
         this.hitbox.x = -96;
         this.hitbox.y = -8;
         this.addChild(this.hitbox);
-
         this.tipo = 1;
     }
 }

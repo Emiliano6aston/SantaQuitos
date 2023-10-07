@@ -2,7 +2,7 @@ import { Sprite } from "pixi.js";
 import { SceneManager } from "../Scenes/SceneManager";
 import { Obstaculo } from "./MapMaker";
 
-export class Bicic extends Obstaculo{
+export class Bicicletero extends Obstaculo{
     Visual: Sprite;
     nombre: string;
     constructor(){
@@ -15,13 +15,11 @@ export class Bicic extends Obstaculo{
         this.addChild(this.Visual);
 
         this.hitbox.beginFill(0xFF00FF, SceneManager.showHitBox);
-        this.hitbox.drawRect(16,-48,160,96);
+        this.hitbox.drawRect(32,-20,30,20);
         this.hitbox.endFill();
         this.hitbox.x = -96;
         this.hitbox.y = -8;
         this.addChild(this.hitbox);
-
         this.tipo = 2;
-
     }
 }

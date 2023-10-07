@@ -15,11 +15,11 @@ export class Pilar extends Obstaculo{
         this.addChild(this.Visual);
 
         this.hitbox.beginFill(0xFF00FF, SceneManager.showHitBox);
-        this.hitbox.drawRect(48,-80,96,160);
+        this.hitbox.drawRect(70,-50,60,160);
         this.hitbox.endFill();
         this.hitbox.x = -96;
         this.hitbox.y = -8;
         this.addChild(this.hitbox);
-        this.tipo = 2;
+        this.tipo = 3;
     }
 }

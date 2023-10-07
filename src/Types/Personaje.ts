@@ -24,14 +24,10 @@ export class Skater extends PContainer implements IHitbox{
     minScale: number = 0.85;
 
     //Atributos de juego
-    Score:number = 0;
-    Timer:number = 0.0;
-    Stars:number = 0;
-    Tries:number = 3;
-    KQuitos:number = 0;
-    LastTrick:number = 0; //0 - none | 1 - Ollie | 2 - Flip | 3 - Grind | 4 - KillQuito
+    reset: boolean = false;
+    Score: Score;
     
-    constructor(){
+    constructor(score:Score){
         super();
         
         this.AS_Run = new AnimatedSprite([
@@ -51,7 +47,7 @@ export class Skater extends PContainer implements IHitbox{
         ], true);
 
         this.hitbox = new Graphics();
-        this.hitbox.beginFill(0xFF00FF, 0.01);
+        this.hitbox.beginFill(0xFF00FF, SceneManager.showHitBox);
         this.hitbox.drawRect(0,0,64,128);
         this.hitbox.endFill();
         this.hitbox.x = -32;
@@ -90,17 +86,18 @@ export class Skater extends PContainer implements IHitbox{
         Keyboard.down.on("KeyE", this.onKeyE, this);
 
         //Atributos de juego init
-
-        this.Timer = 0.0;
-
+        this.Score = score;
+        //this.Score.Timer = 0.0;
     }
 
     public override update(deltaTime : number, _deltaFrame : number): void {        
         super.update(deltaTime, _deltaFrame);
 
+        console.log(this.Score.Timer);
+
         //Atributos de juego update
-        this.Timer += deltaTime;
-        console.log(this.Timer);
+        this.Score.Timer += deltaTime;
+        //console.log(this.Timer);
 
         //Center on Screen
         if (this.centered && (this.onPlat ||  this.onGround)){
@@ -227,6 +224,9 @@ export class Skater extends PContainer implements IHitbox{
             this.removeChild(this.AS_Run);
             this.removeChild(this.AS_Grind);
             this.addChild(this.AS_Jump);
+
+            //Score
+            this.Score.LastTrick = 1;
         }
         if (this.onPlat){
             //Physics
@@ -243,6 +243,9 @@ export class Skater extends PContainer implements IHitbox{
             this.removeChild(this.AS_Run);
             this.removeChild(this.AS_Grind);
             this.addChild(this.AS_Jump);
+
+            //Score
+            this.Score.LastTrick = 1;
         }
     }
 
@@ -259,6 +262,12 @@ export class Skater extends PContainer implements IHitbox{
                     this.scale.set(this.minScale);
                 }
             }
+            if (b.tipo == 2 && !this.onGround){
+                this.reset = true;
+            }
+            if (b.tipo == 3){
+                this.reset = true;
+            }
         }
     }
 
@@ -267,5 +276,11 @@ export class Skater extends PContainer implements IHitbox{
     }
 }
 
-
-
+export class Score{
+    Score:number = 0;
+    Timer:number = 0.0;
+    Stars:number = 0;
+    Tries:number = 3;
+    KQuitos:number = 0;
+    LastTrick:number = 0; //0 - none | 1 - Ollie | 2 - Flip | 3 - Grind | 4 - KillQuito
+}

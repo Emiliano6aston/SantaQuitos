@@ -1,17 +1,19 @@
 import { Container, Texture, TilingSprite } from "pixi.js";
 import { Emitter, upgradeConfig } from "@pixi/particle-emitter";
-import { Sound, sound } from "@pixi/sound";
 import { checkCollision } from "../Types/Interfaces/IHitbox";
-import * as mosParticle from "../mosquitos.json";
-import { Skater } from "../Types/Personaje";
+import { SceneBase } from "./SceneBase";
+import { SceneManager, music } from "./SceneManager";
+import { Obstaculo } from "../Types/MapMaker";
+import { Score, Skater } from "../Types/Personaje";
 import { Banco } from "../Types/Banco";
 import { Fuente } from "../Types/Fuente";
 import { Pilar } from "../Types/Pilar";
-import { Bicic } from "../Types/Bicic";
 import { BolaT } from "../Types/BolaTransito";
-import { SceneBase } from "./SceneBase";
-import { SceneManager } from "./SceneManager";
-import { Obstaculo } from "../Types/MapMaker";
+import { Bicicletero } from "../Types/Bicicletero";
+
+import * as mosParticle from "../mosquitos.json";
+
+
 
 
 export class MainScene extends SceneBase{
@@ -29,11 +31,13 @@ export class MainScene extends SceneBase{
     bg4: TilingSprite;
     moscos: Emitter;
     contMoscos: Container;
-    SF: Sound;
     bancos: Obstaculo[];
+    score: Score;
 
-    constructor(){
+    constructor(score:Score){
         super();
+
+        this.score = score;
         //Constantes
         this.ground = 600;
         this.gravity = 0.004;
@@ -91,7 +95,7 @@ export class MainScene extends SceneBase{
         this.addChild(fuente1);
         this.bancos.push(fuente1);
 
-        const bicic1 = new Bicic();
+        const bicic1 = new Bicicletero();
         bicic1.position.x = 750;
         bicic1.position.y = this.ground - 16;
         this.addChild(bicic1);
@@ -103,7 +107,7 @@ export class MainScene extends SceneBase{
         this.addChild(bola1);
         this.bancos.push(bola1);
 
-        this.Skater1 = new Skater();
+        this.Skater1 = new Skater(this.score);
         this.addChild(this.Skater1);
         //Seteamos los atributos globales en la clase skater
         this.Skater1.gravity = this.gravity;
@@ -120,20 +124,28 @@ export class MainScene extends SceneBase{
         this.contMoscos.position.set(SceneManager.WX+100,this.ground);
         this.addChild(this.contMoscos);
 
-        //Sounds
-        this.SF = sound.find("SantaFe1");
 
-        this.SF.volume = 0.1;
-        this.SF.play();
+        //Sounds
+        if (music){
+            if (!music.isPlaying){
+                music.volume = 0.1;
+                music.play();
+                console.log(1);
+            }
+        }
     }
 
     public update(deltaTime : number, deltaFrame : number) : void{
 
+        if (this.Skater1.reset){
+            this.Skater1.reset = false;
+            SceneManager.changeScene(new MainScene(this.score));
+        }
+
         //KillConditions
         if (this.Skater1.position.x > this.contMoscos.position.x -3 && this.Skater1.position.x < this.contMoscos.position.x +3){
             if(this.Skater1.position.y > this.contMoscos.position.y){
-                this.SF.pause();
-                SceneManager.changeScene(new MainScene);
+                this.Skater1.reset = true;
             }
         }
 

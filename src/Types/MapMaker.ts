@@ -16,7 +16,7 @@ export class MapMaker{
 export class Obstaculo extends Container implements IHitbox{
     activo : boolean = true;
     puntaje : number = 0;
-    tipo : number = 1; //0 = pj | 1 = plataforma | 2 = obstaculo | 3 = mosquitos
+    tipo : number = 1; //0 = pj | 1 = plataforma | 2 = obstaculo alto | 3 = obstaculo bajo | 4 = mosquito
     speed: number = 0.1;
     hitbox: Graphics;
     constructor(){

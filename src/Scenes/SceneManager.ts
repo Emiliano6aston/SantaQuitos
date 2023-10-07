@@ -1,16 +1,18 @@
 import { Application, Ticker } from "pixi.js";
 import { Keyboard } from "../Types/Keyboard";
 import { SceneBase } from "./SceneBase";
-import { Sound } from "@pixi/sound";
+import { Sound, sound } from "@pixi/sound";
+
+export const music: Sound = sound.find("SantaFe1");
 
 export namespace SceneManager{
     let currentScene:SceneBase;
     let app:Application;
-    music:Sound;
 
     export const WX = 1280;
     export const WY = 720;
-    export const showHitBox = 0.01;
+    export const showHitBox = 0.5;
+    
 
     export function initialize(){
         if (app != undefined){

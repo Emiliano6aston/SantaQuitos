@@ -23,5 +23,4 @@ export function checkCollision(objA:IHitbox, objB:IHitbox):Rectangle | void{
         retval.height = amasb - bmasa;
         return retval;
     }
-
 }
