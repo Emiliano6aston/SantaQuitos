@@ -1,6 +1,6 @@
 import { Container, Texture, TilingSprite } from "pixi.js";
 import { Emitter, upgradeConfig } from "@pixi/particle-emitter";
-import { sound } from "@pixi/sound";
+import { Sound, sound } from "@pixi/sound";
 import { checkCollision } from "../Types/Interfaces/IHitbox";
 import * as mosParticle from "../mosquitos.json";
 import { Skater } from "../Types/Personaje";
@@ -11,7 +11,7 @@ import { Bicic } from "../Types/Bicic";
 import { BolaT } from "../Types/BolaTransito";
 import { SceneBase } from "./SceneBase";
 import { SceneManager } from "./SceneManager";
-import { MapMaker } from "../Types/MapMaker";
+import { Obstaculo } from "../Types/MapMaker";
 
 
 export class MainScene extends SceneBase{
@@ -29,8 +29,8 @@ export class MainScene extends SceneBase{
     bg4: TilingSprite;
     moscos: Emitter;
     contMoscos: Container;
-    SF: any;
-    bancos: never[];
+    SF: Sound;
+    bancos: Obstaculo[];
 
     constructor(){
         super();
@@ -44,9 +44,10 @@ export class MainScene extends SceneBase{
 
         //Fondo
         this.bg0 = new TilingSprite(Texture.from("Builds1"), SceneManager.WX,SceneManager.WY);
-        this.bg0.position.y = -256;
-        this.bg0.scale.x = 1.0;
-        this.bg0.scale.y = 1.0;
+        //this.bg0.position.y = -256;
+        this.bg0.position.y = -150;//Belgrano
+        this.bg0.scale.x = 3.0;//Belgrano 3 | Parque 1 | Gobierno 3
+        this.bg0.scale.y = 3.0;
         this.addChild(this.bg0);
 
         this.bg1 = new TilingSprite(Texture.from("Asfalto1"), SceneManager.WX, 128);
@@ -119,9 +120,6 @@ export class MainScene extends SceneBase{
         this.contMoscos.position.set(SceneManager.WX+100,this.ground);
         this.addChild(this.contMoscos);
 
-        // this.p_mosco = new Mosco();
-        // this.addChild(this.p_mosco);
-
         //Sounds
         this.SF = sound.find("SantaFe1");
 
@@ -131,23 +129,21 @@ export class MainScene extends SceneBase{
 
     public update(deltaTime : number, deltaFrame : number) : void{
 
-        this.moscos.update(deltaFrame/100);
-        this.contMoscos.position.x -= 0.1 * deltaTime; 
-
+        //KillConditions
         if (this.Skater1.position.x > this.contMoscos.position.x -3 && this.Skater1.position.x < this.contMoscos.position.x +3){
             if(this.Skater1.position.y > this.contMoscos.position.y){
-                this.removeFromParent();
-                this.SF.volume = 0;
+                this.SF.pause();
+                SceneManager.changeScene(new MainScene);
             }
         }
+
+        //MoscoLogic
+        this.moscos.update(deltaFrame/100);
+        this.contMoscos.position.x -= 0.1 * deltaTime; 
         if (this.contMoscos.position.x < 0) this.contMoscos.position.x = SceneManager.WX + 100;
 
         //CheckCollisions
         for (let B of this.bancos){
-            // if (c != null && (this.Skater1.JumpIn || this.Skater1.JumpOut) ){
-            //     this.Skater1.position.y -= c.height - 1;
-            //     this.Skater1.speed.y = 0;
-            // };
 
             //check collisions
             const c = checkCollision(this.Skater1 , B);
@@ -169,40 +165,7 @@ export class MainScene extends SceneBase{
         this.bg3.tilePosition.x -= this.worldspeed * deltaTime;
         this.bg4.tilePosition.x -= this.worldspeed * deltaTime;
         
-
+        //PlayerLogic
         this.Skater1.update(deltaTime, deltaFrame);
-
-        //Jump and gravity
-        // if (this.Skater1.position.y >= this.ground){
-        //     this.Skater1.speed.y = 0;
-        //     this.Skater1.accel.y = 0;
-        //     this.Skater1.onGround = true;
-        //     this.Skater1.onPlat = false;
-        //     this.Skater1.JumpIn = false;
-        //     this.Skater1.JumpOut = false;
-        // }else{
-        //     this.Skater1.accel.y = this.gravity;
-        //     this.Skater1.onGround = false;
-        // }
-
-        //Center on mid horizontal
-        // if (this.Skater1.NOC && this.Skater1.onGround){
-        //     if (this.Skater1.position.x > (SceneManager.WX/2 + 3)){
-        //         this.Skater1.speed.x = -0.3;
-        //     }else{
-        //         if (this.Skater1.position.x <= (SceneManager.WX/2 - 3)){
-        //             this.Skater1.speed.x = 0.3;
-        //         }else{
-        //             this.Skater1.speed.x = 0;
-        //         }
-        //     }
-        // }
-
-        if (this.Skater1.position.x > SceneManager.WX || this.Skater1.position.x < 16){
-
-            if (this.Skater1.position.x < 16) this.Skater1.position.x = 17;
-
-            this.Skater1.centered = true;
-        }
     }
 }

@@ -3,7 +3,6 @@ import { PContainer } from "./PContainer";
 import { Keyboard } from "./Keyboard";
 import { IHitbox } from "./Interfaces/IHitbox";
 import { SceneManager } from "../Scenes/SceneManager";
-//import { WY } from "..";
 
 export class Skater extends PContainer implements IHitbox{
     //Actions
@@ -23,6 +22,14 @@ export class Skater extends PContainer implements IHitbox{
     JumpSpeed:number = 0.75;
     ScaleJump:number = 1;
     minScale: number = 0.85;
+
+    //Atributos de juego
+    Score:number = 0;
+    Timer:number = 0.0;
+    Stars:number = 0;
+    Tries:number = 3;
+    KQuitos:number = 0;
+    LastTrick:number = 0; //0 - none | 1 - Ollie | 2 - Flip | 3 - Grind | 4 - KillQuito
     
     constructor(){
         super();
@@ -82,11 +89,20 @@ export class Skater extends PContainer implements IHitbox{
         Keyboard.up.on("KeyD", this.Reset, this);
         Keyboard.down.on("KeyE", this.onKeyE, this);
 
+        //Atributos de juego init
+
+        this.Timer = 0.0;
+
     }
 
     public override update(deltaTime : number, _deltaFrame : number): void {        
         super.update(deltaTime, _deltaFrame);
 
+        //Atributos de juego update
+        this.Timer += deltaTime;
+        console.log(this.Timer);
+
+        //Center on Screen
         if (this.centered && (this.onPlat ||  this.onGround)){
             if (this.position.x > (SceneManager.WX/2 + 3)){
                 this.speed.x = -0.3;
@@ -99,6 +115,14 @@ export class Skater extends PContainer implements IHitbox{
             }
         }
 
+        if (this.position.x > SceneManager.WX || this.position.x < 16){
+
+            if (this.position.x < 16) this.position.x = 17;
+
+            this.centered = true;
+        }
+
+        //Gravity and ground collision
         if (this.position.y >= this.ground){
             //Physics
             this.speed.y = 0;
@@ -128,18 +152,17 @@ export class Skater extends PContainer implements IHitbox{
             this.scale.set(this.ScaleJump);
         }
 
+        //Animations and states
         this.AS_Run.play();
         this.AS_Grind.play();
+        this.AS_Jump.play();
 
-        if (this.speed.y > 0){ //fix?
+        if ( this.speed.y > 0 && (this.JumpIn || this.JumpOut )){ //fix?
             this.AS_Jump.currentFrame = 1;
         }
 
-        if ((this.JumpIn || this.JumpOut)){
-            this.AS_Jump.play();
-        }
 
-        if (!this.onGrind && (!this.JumpIn || !this.JumpOut)){ //Run
+        if (this.onGround){ //Run
             this.removeChild(this.AS_Jump);
             this.removeChild(this.AS_Grind);
             this.addChild(this.AS_Run);
@@ -149,6 +172,7 @@ export class Skater extends PContainer implements IHitbox{
             this.removeChild(this.AS_Jump);
             this.removeChild(this.AS_Grind);
             this.addChild(this.AS_Run);
+            this.scale.set(this.minScale);
         }
     }
     
@@ -204,7 +228,7 @@ export class Skater extends PContainer implements IHitbox{
             this.removeChild(this.AS_Grind);
             this.addChild(this.AS_Jump);
         }
-        if (this.onPlat || this.onGrind){
+        if (this.onPlat){
             //Physics
             this.speed.y = -this.JumpSpeed - Math.abs((this.speed.x) * 0.5);
             this.position.y -= 5;
@@ -212,6 +236,7 @@ export class Skater extends PContainer implements IHitbox{
             //States
             this.JumpIn = false;
             this.JumpOut = true;
+            this.onPlat = false;
 
             //Animation
             this.AS_Jump.currentFrame = 0;

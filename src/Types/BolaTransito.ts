@@ -1,10 +1,8 @@
-import { Graphics, Rectangle, Sprite } from "pixi.js";
-import { IHitbox } from "./Interfaces/IHitbox";
+import { Sprite } from "pixi.js";
 import { SceneManager } from "../Scenes/SceneManager";
 import { Obstaculo } from "./MapMaker";
 
-export class BolaT extends Obstaculo implements IHitbox{
-    hitbox: Graphics;
+export class BolaT extends Obstaculo{
     Visual: Sprite;
     nombre: string;
     constructor(){
@@ -16,7 +14,6 @@ export class BolaT extends Obstaculo implements IHitbox{
         this.Visual.anchor.set(0.5);
         this.addChild(this.Visual);
 
-        this.hitbox = new Graphics();
         this.hitbox.beginFill(0xFF00FF, SceneManager.showHitBox);
         this.hitbox.drawRect(0,0,168,16);
         this.hitbox.endFill();
@@ -28,7 +25,5 @@ export class BolaT extends Obstaculo implements IHitbox{
 
     }
 
-    getHitbox(): Rectangle {
-        return this.hitbox.getBounds();
-    }
+    
 }
