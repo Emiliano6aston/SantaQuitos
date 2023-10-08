@@ -25,6 +25,13 @@ export const assets = {
      SkateAnim9: "/SkaterSkate/Skater_Anim09.png",
      SkateAnim10: "/SkaterSkate/Skater_Anim10.png",
      SkateAnim11: "/SkaterSkate/Skater_Anim11.png",
+     SkateAnim12: "/SkaterSkate/Skater_Anim12.png",
+     SkateAnim13: "/SkaterSkate/Skater_Anim13.png",
+     SkateAnim14: "/SkaterSkate/Skater_Anim14.png",
+     SkateAnim15: "/SkaterSkate/Skater_Anim15.png",
+     SkateAnim16: "/SkaterSkate/Skater_Anim16.png",
+     SkateAnim17: "/SkaterSkate/Skater_Anim17.png",
+     SkateAnim18: "/SkaterSkate/Skater_Anim18.png",
  
      //UI
      UI_panel: "./UI/UI_panel.png",

@@ -9,6 +9,8 @@ export class Skater extends PContainer implements IHitbox{
     AS_Run: AnimatedSprite;
     AS_Jump: AnimatedSprite;
     AS_Grind: AnimatedSprite;
+    AS_Fall: AnimatedSprite;
+    AS_Flip: AnimatedSprite;
 
     centered: boolean;
     hitbox:Graphics;
@@ -46,9 +48,25 @@ export class Skater extends PContainer implements IHitbox{
             Texture.from("SkateAnim10"),
         ], true);
 
+        this.AS_Fall = new AnimatedSprite([
+            Texture.from("SkateAnim12"),
+            Texture.from("SkateAnim13"),
+            Texture.from("SkateAnim13"),
+            Texture.from("SkateAnim13"),
+            Texture.from("SkateAnim13"),
+        ], true);
+
+        this.AS_Flip = new AnimatedSprite([
+            Texture.from("SkateAnim14"),
+            Texture.from("SkateAnim15"),
+            Texture.from("SkateAnim16"),
+            Texture.from("SkateAnim17"),
+            Texture.from("SkateAnim18"),
+        ], true);
+
         this.hitbox = new Graphics();
         this.hitbox.beginFill(0xFF00FF, SceneManager.showHitBox);
-        this.hitbox.drawRect(0,0,64,128);
+        this.hitbox.drawRect(8,96,64,32);
         this.hitbox.endFill();
         this.hitbox.x = -32;
         this.hitbox.y = -48;
@@ -74,6 +92,21 @@ export class Skater extends PContainer implements IHitbox{
         this.AS_Grind.animationSpeed = 0.25;
         this.AS_Grind.currentFrame = 0;
 
+        this.AS_Flip.loop = false;
+        this.AS_Flip.scale.set(0.25);
+        this.AS_Flip.anchor.x = 0.5;
+        this.AS_Flip.position.x = 5;
+        this.AS_Flip.position.y = -40;
+        this.AS_Flip.animationSpeed = 0.5;
+        //this.AS_Flip.currentFrame = 0;
+
+        this.AS_Fall.loop = false;
+        this.AS_Fall.scale.set(0.25);
+        this.AS_Fall.anchor.x = 0.5;
+        this.AS_Fall.position.x = 5;
+        this.AS_Fall.position.y = -40;
+        this.AS_Fall.animationSpeed = 0.05;
+
         this.addChild(this.AS_Run);
         this.addChild(this.hitbox);
 
@@ -84,6 +117,7 @@ export class Skater extends PContainer implements IHitbox{
         Keyboard.down.on("KeyD", this.onKeyD, this);
         Keyboard.up.on("KeyD", this.Reset, this);
         Keyboard.down.on("KeyE", this.onKeyE, this);
+        Keyboard.down.on("KeyQ", this.onKeyQ, this);
 
         //Atributos de juego init
         this.Score = score;
@@ -93,7 +127,7 @@ export class Skater extends PContainer implements IHitbox{
     public override update(deltaTime : number, _deltaFrame : number): void {        
         super.update(deltaTime, _deltaFrame);
 
-        console.log(this.Score.Timer);
+        //console.log(this.Score.Timer);
 
         //Atributos de juego update
         this.Score.Timer += deltaTime;
@@ -115,7 +149,6 @@ export class Skater extends PContainer implements IHitbox{
         if (this.position.x > SceneManager.WX || this.position.x < 16){
 
             if (this.position.x < 16) this.position.x = 17;
-
             this.centered = true;
         }
 
@@ -154,20 +187,46 @@ export class Skater extends PContainer implements IHitbox{
         this.AS_Grind.play();
         this.AS_Jump.play();
 
+        if (this.onFall){
+            this.speed.x = -0.1 ;
+            this.worldspeed = 0.3;
+            this.centered = false;
+            if (this.AS_Fall.currentFrame == 4){
+                this.reset = true;
+                this.onFall = false;
+            }
+            this.onGround = true;
+            this.removeChild(this.AS_Run);
+            this.removeChild(this.AS_Jump);
+            this.removeChild(this.AS_Grind);
+            this.removeChild(this.AS_Flip);
+            this.addChild(this.AS_Fall);
+            this.AS_Fall.play();
+        }
+        
+        if (this.onFlip){
+            
+            this.AS_Flip.play();
+            if (this.AS_Flip.currentFrame == 2 ){
+                this.onFlip = false;
+            }
+        }
+
         if ( this.speed.y > 0 && (this.JumpIn || this.JumpOut )){ //fix?
             this.AS_Jump.currentFrame = 1;
         }
 
-
-        if (this.onGround){ //Run
+        if (this.onGround && !this.onFall){ //Run
             this.removeChild(this.AS_Jump);
             this.removeChild(this.AS_Grind);
+            this.removeChild(this.AS_Flip);
             this.addChild(this.AS_Run);
         }
 
-        if (this.onPlat && !this.onGrind){ //RunOnPlat
+        if (this.onPlat && !this.onGrind && !this.onFall){ //RunOnPlat
             this.removeChild(this.AS_Jump);
             this.removeChild(this.AS_Grind);
+            this.removeChild(this.AS_Flip);
             this.addChild(this.AS_Run);
             this.scale.set(this.minScale);
         }
@@ -193,7 +252,7 @@ export class Skater extends PContainer implements IHitbox{
 
     private onKeyE():void{
 
-        if ( this.JumpIn || this.JumpOut){
+        if (this.JumpIn || this.JumpOut || !this.onFlip){
             //Physics
             this.speed.y = 0;
 
@@ -205,12 +264,23 @@ export class Skater extends PContainer implements IHitbox{
             //Animations
             this.removeChild(this.AS_Run);
             this.removeChild(this.AS_Jump);
+            this.removeChild(this.AS_Flip);
             this.addChild(this.AS_Grind);
+        }
+    }
+    private onKeyQ():void{
+        if (this.JumpIn || this.JumpOut){
+            this.onFlip = true;
+            this.AS_Flip.currentFrame = 0;
+            this.removeChild(this.AS_Run);
+            this.removeChild(this.AS_Jump);
+            this.removeChild(this.AS_Grind);
+            this.addChild(this.AS_Flip);
         }
     }
 
     private onJump():void{
-        if (this.onGround){
+        if (this.onGround && !this.onFlip){
             //Physics
             this.speed.y = -this.JumpSpeed - Math.abs((this.speed.x) * 0.5);
             this.position.y -= 5;
@@ -223,12 +293,13 @@ export class Skater extends PContainer implements IHitbox{
             this.AS_Jump.currentFrame = 0;
             this.removeChild(this.AS_Run);
             this.removeChild(this.AS_Grind);
+            this.removeChild(this.AS_Flip);
             this.addChild(this.AS_Jump);
 
             //Score
             this.Score.LastTrick = 1;
         }
-        if (this.onPlat){
+        if (this.onPlat && !this.onFlip){
             //Physics
             this.speed.y = -this.JumpSpeed - Math.abs((this.speed.x) * 0.5);
             this.position.y -= 5;
@@ -242,6 +313,7 @@ export class Skater extends PContainer implements IHitbox{
             this.AS_Jump.currentFrame = 0;
             this.removeChild(this.AS_Run);
             this.removeChild(this.AS_Grind);
+            this.removeChild(this.AS_Flip);
             this.addChild(this.AS_Jump);
 
             //Score
@@ -251,7 +323,7 @@ export class Skater extends PContainer implements IHitbox{
 
     public checkCollision(c:any, b:any):void{
         if ( c != null){
-            if (b.tipo != 2 && (this.JumpIn || this.JumpOut || this.onGrind || !this.onPlat)){
+            if (b.tipo != 2 && (this.JumpIn || this.JumpOut || this.onGrind || !this.onPlat || !this.onFall)){
                 if (this.speed.y > 0 && this.position.y < (b.position.y + c.height)){
                     //Physics
                     this.speed.y = 0;
@@ -263,10 +335,10 @@ export class Skater extends PContainer implements IHitbox{
                 }
             }
             if (b.tipo == 2 && !this.onGround){
-                this.reset = true;
+                this.onFall = true;
             }
             if (b.tipo == 3){
-                this.reset = true;
+                this.onFall = true;
             }
         }
     }

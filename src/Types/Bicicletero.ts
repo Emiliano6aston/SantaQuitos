@@ -15,7 +15,7 @@ export class Bicicletero extends Obstaculo{
         this.addChild(this.Visual);
 
         this.hitbox.beginFill(0xFF00FF, SceneManager.showHitBox);
-        this.hitbox.drawRect(32,-20,30,20);
+        this.hitbox.drawRect(64,-20,30,20);
         this.hitbox.endFill();
         this.hitbox.x = -96;
         this.hitbox.y = -8;

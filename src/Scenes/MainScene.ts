@@ -2,7 +2,7 @@ import { Container, Texture, TilingSprite } from "pixi.js";
 import { Emitter, upgradeConfig } from "@pixi/particle-emitter";
 import { checkCollision } from "../Types/Interfaces/IHitbox";
 import { SceneBase } from "./SceneBase";
-import { SceneManager, music } from "./SceneManager";
+import { SceneManager } from "./SceneManager";
 import { Obstaculo } from "../Types/MapMaker";
 import { Score, Skater } from "../Types/Personaje";
 import { Banco } from "../Types/Banco";
@@ -12,9 +12,7 @@ import { BolaT } from "../Types/BolaTransito";
 import { Bicicletero } from "../Types/Bicicletero";
 
 import * as mosParticle from "../mosquitos.json";
-
-
-
+import { Sound } from "@pixi/sound";
 
 export class MainScene extends SceneBase{
 
@@ -33,9 +31,12 @@ export class MainScene extends SceneBase{
     contMoscos: Container;
     bancos: Obstaculo[];
     score: Score;
+    music: Sound;
 
-    constructor(score:Score){
+    constructor(score:Score, music:Sound){
         super();
+
+        this.music = music;
 
         this.score = score;
         //Constantes
@@ -126,26 +127,28 @@ export class MainScene extends SceneBase{
 
 
         //Sounds
-        if (music){
-            if (!music.isPlaying){
-                music.volume = 0.1;
-                music.play();
-                console.log(1);
-            }
-        }
     }
 
     public update(deltaTime : number, deltaFrame : number) : void{
 
         if (this.Skater1.reset){
             this.Skater1.reset = false;
-            SceneManager.changeScene(new MainScene(this.score));
+            this.score.Tries -= 1;
+            console.log(this.score.Tries);
+
+            if (this.score.Tries < 0){
+                this.music.stop();
+                SceneManager.end();
+                return;
+            }else{
+                SceneManager.changeScene(new MainScene(this.score, this.music));
+            }
         }
 
         //KillConditions
         if (this.Skater1.position.x > this.contMoscos.position.x -3 && this.Skater1.position.x < this.contMoscos.position.x +3){
             if(this.Skater1.position.y > this.contMoscos.position.y){
-                this.Skater1.reset = true;
+                this.Skater1.onFall = true;
             }
         }
 
@@ -170,6 +173,8 @@ export class MainScene extends SceneBase{
 
         //World and background
         //Building
+        if (this.Skater1.worldspeed < this.worldspeed) this.worldspeed = this.Skater1.worldspeed;
+
         this.bg0.tilePosition.x -= 0.005 * this.worldspeed * deltaTime;
         //Fondo
         this.bg1.tilePosition.x -= 0.75 * this.worldspeed * deltaTime;

@@ -7,8 +7,11 @@ export class PContainer extends Container{
     public onGround : boolean = false;
     public onPlat : boolean = false;
     public onGrind : boolean = false;
+    public onFlip : boolean = false;
+    public onFall : boolean = false;
     public JumpIn : boolean = false;
     public JumpOut : boolean = false;
+    
 
     public update(deltaTime : number, _deltaFrame : number){
         this.x += this.speed.x * deltaTime + 1/2 * this.accel.x * deltaTime * deltaTime;

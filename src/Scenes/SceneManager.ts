@@ -1,9 +1,6 @@
 import { Application, Ticker } from "pixi.js";
 import { Keyboard } from "../Types/Keyboard";
 import { SceneBase } from "./SceneBase";
-import { Sound, sound } from "@pixi/sound";
-
-export const music: Sound = sound.find("SantaFe1");
 
 export namespace SceneManager{
     let currentScene:SceneBase;
@@ -11,7 +8,7 @@ export namespace SceneManager{
 
     export const WX = 1280;
     export const WY = 720;
-    export const showHitBox = 0.5;
+    export const showHitBox = 0.01;
     
 
     export function initialize(){
@@ -62,6 +59,12 @@ export namespace SceneManager{
         }
         currentScene = newScene;
         app.stage.addChild(currentScene);
+    }
+
+    export function end(){
+        if(currentScene){
+            currentScene.destroy();
+        }
     }
 
     export function update(deltaFrame:number, _deltaTime:number ){
