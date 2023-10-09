@@ -3,7 +3,6 @@ import { Emitter, upgradeConfig } from "@pixi/particle-emitter";
 import { checkCollision } from "../Types/Interfaces/IHitbox";
 import { SceneBase } from "./SceneBase";
 import { SceneManager } from "./SceneManager";
-import { Obstaculo } from "../Types/MapMaker";
 import { Skater } from "../Types/Personaje";
 import { Banco } from "../Types/Obstaculos/Banco";
 import { Fuente } from "../Types/Obstaculos/Fuente";
@@ -16,6 +15,7 @@ import { Sound } from "@pixi/sound";
 import { GameUI, Score } from "../Types/Score";
 import { MenuScene } from "./MenuScene";
 import { Pozo } from "../Types/Obstaculos/Pozo";
+import { Obstaculo } from "../Types/Obstaculo";
 
 export class MainScene extends SceneBase{
 
@@ -114,24 +114,27 @@ export class MainScene extends SceneBase{
 
         const pozo1 = new Pozo();
         pozo1.scale.set(0.7);
-        pozo1.position.x = 500;
+        pozo1.position.x = 1200;
         pozo1.position.y = this.ground + 80;
         this.addChild(pozo1);
         this.bancos.push(pozo1);
 
+        const pilar1 = new Pilar();
+        pilar1.scale.set(0.75);
+        pilar1.position.x = 1800;
+        pilar1.position.y = this.ground - 20;
+        this.addChild(pilar1);
+        this.bancos.push(pilar1);
+
         this.Skater1 = new Skater(this.score);
         this.addChild(this.Skater1);
+
         //Seteamos los atributos globales en la clase skater
         this.Skater1.gravity = this.gravity;
         this.Skater1.ground = this.ground;
         this.Skater1.worldspeed = this.worldspeed;
 
-        const pilar1 = new Pilar();
-        pilar1.scale.set(0.75);
-        pilar1.position.x = 2000;
-        pilar1.position.y = this.ground + 48;
-        this.addChild(pilar1);
-        this.bancos.push(pilar1);
+        
 
         this.contMoscos.position.set(SceneManager.WX+100,this.ground);
         this.addChild(this.contMoscos);
@@ -167,8 +170,8 @@ export class MainScene extends SceneBase{
 
         //MoscoLogic
         this.moscos.update(deltaFrame/100);
-        this.contMoscos.position.x -= 0.1 * deltaTime; 
-        if (this.contMoscos.position.x < 0) this.contMoscos.position.x = SceneManager.WX + 100;
+        this.contMoscos.position.x -= this.worldspeed * deltaTime; 
+        if (this.contMoscos.position.x < -100) this.contMoscos.position.x = SceneManager.WX + 1000;
 
         //CheckCollisions
         for (let B of this.bancos){

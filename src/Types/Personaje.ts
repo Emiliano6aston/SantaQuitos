@@ -4,7 +4,7 @@ import { Keyboard } from "./Keyboard";
 import { IHitbox } from "./Interfaces/IHitbox";
 import { SceneManager } from "../Scenes/SceneManager";
 import { Score } from "./Score";
-import { Sound, sound } from "@pixi/sound";
+import { Sound, filters, sound } from "@pixi/sound";
 
 export class Skater extends PContainer implements IHitbox{
     //Actions
@@ -40,6 +40,8 @@ export class Skater extends PContainer implements IHitbox{
     land: Sound;
     flip: Sound;
     grind: Sound;
+    panner: filters.StereoFilter;
+    volume: number = 0.1;
     
     constructor(score:Score){
         super();
@@ -142,20 +144,37 @@ export class Skater extends PContainer implements IHitbox{
         this.Score = score;
 
         //Sounds
+        this.panner = new filters.StereoFilter();
+        this.panner.pan = 2;
+
+
         this.roll = sound.find("roll");
         this.roll.loop = false;
+        this.roll.volume = this.volume;
+        this.roll.filters = [this.panner];
         this.jump = sound.find("jump");
+        this.jump.volume = this.volume;
+        this.jump.filters = [this.panner];
         this.fall = sound.find("fall");
         this.fall.loop = false;
+        this.fall.volume = this.volume;
+        this.fall.filters = [this.panner];
         this.land = sound.find("land");
         this.land.loop = false;
+        this.land.volume = this.volume;
+        this.land.filters = [this.panner];
         this.flip = sound.find("flip");
         this.flip.loop = false;
+        this.flip.volume = this.volume;
+        this.flip.filters = [this.panner];
         this.grind = sound.find("grind");
         this.grind.loop = false;
+        this.grind.volume = this.volume;
+        this.grind.filters = [this.panner];
+
     }
 
-    public override update(deltaTime : number, _deltaFrame : number): void {        
+    public override update(deltaTime : number, _deltaFrame : number): void {     
         super.update(deltaTime, _deltaFrame);
 
         //Atributos de juego update
@@ -166,8 +185,11 @@ export class Skater extends PContainer implements IHitbox{
         }
         if (!this.onGround && !this.onGrind && !this.onPlat) this.Score.Score += 1;
 
+        this.panner.pan = (this.position.x / SceneManager.WX) - 0.35;
+
         //Center on Screen
         if (this.centered && (this.onPlat ||  this.onGround)){
+            this.vroll();
             if (this.position.x > (SceneManager.WX/2 + 3)){
                 this.speed.x = -0.3;
             }else{
@@ -281,7 +303,10 @@ export class Skater extends PContainer implements IHitbox{
             this.addChild(this.AS_Run);
 
             //sounds
-            if(!this.roll.isPlaying) this.roll.play();
+            if(!this.roll.isPlaying){
+                this.vroll();
+                this.roll.play();
+            }
         }
 
         if (this.onPlat && !this.onGrind && !this.onFall){ //RunOnPlat
@@ -290,6 +315,12 @@ export class Skater extends PContainer implements IHitbox{
             this.removeChild(this.AS_Flip);
             this.addChild(this.AS_Run);
             this.scale.set(this.minScale);
+
+            //sounds
+            if(!this.roll.isPlaying){
+                this.vroll();
+                this.roll.play();
+            }
         }
     }
     
@@ -301,6 +332,8 @@ export class Skater extends PContainer implements IHitbox{
         if ((this.onGround || this.onPlat) && !this.onGrind){
             this.speed.x = -0.4;
             this.centered = false;
+
+            this.vroll();
         }
     }
 
@@ -308,6 +341,8 @@ export class Skater extends PContainer implements IHitbox{
         if ((this.onGround || this.onPlat) && !this.onGrind){
             this.speed.x = 0.4;
             this.centered = false;
+
+            this.vroll();
         }
     }
 
@@ -429,6 +464,9 @@ export class Skater extends PContainer implements IHitbox{
                 this.onFall = true;
             }
         }
+    }
+    private vroll(){
+        this.roll.speed = 1 + (this.speed.x / 2);
     }
 
     public getHitbox():Rectangle{

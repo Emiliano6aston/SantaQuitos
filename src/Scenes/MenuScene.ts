@@ -5,6 +5,7 @@ import { Score } from "../Types/Score";
 import { SceneManager } from "./SceneManager";
 import { button } from "../UI/ButtonBase";
 import { Sprite, Text, TextStyle } from "pixi.js";
+import { Mosco } from "../Types/SP_Mosquito";
 
 export class MenuScene extends SceneBase{
     a: number = 0;
@@ -19,6 +20,8 @@ export class MenuScene extends SceneBase{
     score:Score;
     Title: Text;
     Marco: any;
+    mosco1: Mosco;
+    mosco2: Mosco;
 
     constructor(score:Score){
         super();
@@ -61,9 +64,19 @@ export class MenuScene extends SceneBase{
         this.Title.position.set(SceneManager.WX/2, 150);
         this.addChild(this.Title);
 
+        this.mosco1 = new Mosco();
+        this.addChild(this.mosco1);
+        this.mosco2 = new Mosco();
+        this.mosco2.position.x += 300;
+        this.mosco2.position.y -= 300;
+        this.addChild(this.mosco2);
+
     }
 
     public override update(deltaFrame: number, deltaTime: number): void {
+
+        this.mosco1.update(deltaTime, deltaFrame);
+        this.mosco2.update(deltaTime, deltaFrame);
         
         this.a = deltaFrame;
         this.b = deltaTime;

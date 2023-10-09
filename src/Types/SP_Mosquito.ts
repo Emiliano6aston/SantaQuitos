@@ -24,8 +24,10 @@ export class Mosco extends Sprite{
 
     public update(deltaTime: number, _deltaFrame: number): void {
         this.time += deltaTime;
-        this.AMosco.position.x -= 0.5 * deltaTime;
-        this.AMosco.position.y += deltaTime * 1 * Math.sin(this.time * 0.01 );
+        this.AMosco.position.x -= 0.1 * deltaTime;
+        this.AMosco.position.y += deltaTime * 0.5 * Math.sin(this.time * 0.005 );
         this.AMosco.play();
+
+        if (this.AMosco.position.x < 0) this.AMosco.position.x = 1300;
     }
 }

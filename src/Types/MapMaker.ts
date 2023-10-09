@@ -1,5 +1,8 @@
-import { Container, Graphics, Rectangle } from "pixi.js";
-import { IHitbox } from "./Interfaces/IHitbox";
+import { IUpdate } from "./Interfaces/IUpdate";
+import { Obstaculo } from "./Obstaculo";
+import { Banco } from "./Obstaculos/Banco";
+import { Bicicletero } from "./Obstaculos/Bicicletero";
+import { Pilar } from "./Obstaculos/Pilar";
 
 //3 fases
 //1_ un obstáculo por vez
@@ -15,49 +18,50 @@ import { IHitbox } from "./Interfaces/IHitbox";
 //5 -> especial mapa
 
 
-export class Map{
+export class Map implements IUpdate{
     Obstaculos : Array<Obstaculo>;
     Spawned: Array<Obstaculo>;
     fase: number = 0;
     c_obst: number = 1;
     f_obst: number = 7;
     spawned: number = 0;
+    timer: number = 0;
+    finished: boolean = false;
 
     constructor(mapa:String){
 
         this.Obstaculos = new Array<Obstaculo>;
         this.Spawned = new Array<Obstaculo>;
 
-        // bancos cemento - bicicletero
-        if (mapa == "Federal" ){
-            this.spawn(1);
+        
+        if (mapa == "Federal" ){ // obstaculos: bancos cemento - bicicletero - pilar alto
+            this.add(new Banco());
+            this.add(new Bicicletero());
+            this.add(new Pilar());
+        }
+
+    }
+    update(deltaTime: number, _deltaFrame: number): void {
+        this.timer += deltaTime;
+
+        if (this.timer > 30 * 1000){
+            this.timer = 0;
+            this.fase += 1;
+            this.c_obst += 2;
+        }
+
+        if (this.fase > 2) this.finished = true;
+
+        if (!this.finished){
+            
+            this.Spawned = new Array<Obstaculo>;
         }
 
     }
 
-    private spawn(tipo:number){
-        if (tipo == 0) this.Obstaculos.push();
+    private add(obst:Obstaculo){
+        this.Obstaculos.push(obst);
     }
 
 }
 
-export class Obstaculo extends Container implements IHitbox{
-    activo : boolean = true;
-    puntaje : number = 0;
-    tipo : number = 1; //0 = pj | 1 = plataforma | 2 = obstaculo alto | 3 = obstaculo bajo | 4 = mosquito
-    speed: number = 0.1;
-    hitbox: Graphics;
-    constructor(){
-        super();
-
-        this.hitbox = new Graphics();
-    }
-
-    // private spawn(wx:number):void{
-    //     this.position.x = wx;
-    // }
-
-    getHitbox(): Rectangle {
-        return this.hitbox.getBounds();
-    }
-}

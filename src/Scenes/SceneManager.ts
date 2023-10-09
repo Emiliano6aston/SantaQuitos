@@ -8,7 +8,7 @@ export namespace SceneManager{
 
     export const WX = 1280;
     export const WY = 720;
-    export const showHitBox = 0.1;
+    export const showHitBox = 0.01;
     
 
     export function initialize(){
