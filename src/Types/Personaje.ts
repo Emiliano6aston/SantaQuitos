@@ -3,6 +3,8 @@ import { PContainer } from "./PContainer";
 import { Keyboard } from "./Keyboard";
 import { IHitbox } from "./Interfaces/IHitbox";
 import { SceneManager } from "../Scenes/SceneManager";
+import { Score } from "./Score";
+import { Sound, sound } from "@pixi/sound";
 
 export class Skater extends PContainer implements IHitbox{
     //Actions
@@ -12,8 +14,14 @@ export class Skater extends PContainer implements IHitbox{
     AS_Fall: AnimatedSprite;
     AS_Flip: AnimatedSprite;
 
+    //States
     centered: boolean;
     hitbox:Graphics;
+
+    //Sounds
+    roll:Sound;
+    jump:Sound;
+    fall:Sound;
 
     //Atributos globales
     gravity:number = 0.0;
@@ -28,6 +36,10 @@ export class Skater extends PContainer implements IHitbox{
     //Atributos de juego
     reset: boolean = false;
     Score: Score;
+    lastrick:number = 0;
+    land: Sound;
+    flip: Sound;
+    grind: Sound;
     
     constructor(score:Score){
         super();
@@ -50,6 +62,13 @@ export class Skater extends PContainer implements IHitbox{
 
         this.AS_Fall = new AnimatedSprite([
             Texture.from("SkateAnim12"),
+            Texture.from("SkateAnim12"),
+            Texture.from("SkateAnim13"),
+            Texture.from("SkateAnim13"),
+            Texture.from("SkateAnim13"),
+            Texture.from("SkateAnim13"),
+            Texture.from("SkateAnim13"),
+            Texture.from("SkateAnim13"),
             Texture.from("SkateAnim13"),
             Texture.from("SkateAnim13"),
             Texture.from("SkateAnim13"),
@@ -105,7 +124,7 @@ export class Skater extends PContainer implements IHitbox{
         this.AS_Fall.anchor.x = 0.5;
         this.AS_Fall.position.x = 5;
         this.AS_Fall.position.y = -40;
-        this.AS_Fall.animationSpeed = 0.05;
+        this.AS_Fall.animationSpeed = 0.1;
 
         this.addChild(this.AS_Run);
         this.addChild(this.hitbox);
@@ -121,17 +140,31 @@ export class Skater extends PContainer implements IHitbox{
 
         //Atributos de juego init
         this.Score = score;
-        //this.Score.Timer = 0.0;
+
+        //Sounds
+        this.roll = sound.find("roll");
+        this.roll.loop = false;
+        this.jump = sound.find("jump");
+        this.fall = sound.find("fall");
+        this.fall.loop = false;
+        this.land = sound.find("land");
+        this.land.loop = false;
+        this.flip = sound.find("flip");
+        this.flip.loop = false;
+        this.grind = sound.find("grind");
+        this.grind.loop = false;
     }
 
     public override update(deltaTime : number, _deltaFrame : number): void {        
         super.update(deltaTime, _deltaFrame);
 
-        //console.log(this.Score.Timer);
-
         //Atributos de juego update
         this.Score.Timer += deltaTime;
-        //console.log(this.Timer);
+        if (this.Score.LastTrick != this.lastrick){
+            this.lastrick = this.Score.LastTrick;
+            this.Score.Score += this.Score.Points[this.lastrick];
+        }
+        if (!this.onGround && !this.onGrind && !this.onPlat) this.Score.Score += 1;
 
         //Center on Screen
         if (this.centered && (this.onPlat ||  this.onGround)){
@@ -158,6 +191,10 @@ export class Skater extends PContainer implements IHitbox{
             this.speed.y = 0;
             this.accel.y = 0;
 
+            //Sound
+            if (!this.land.isPlaying && (this.JumpIn || this.JumpOut || this.onGrind || this.onFlip)) this.land.play();
+            this.grind.stop();
+
             //States
             this.onGround = true;
             this.onPlat = false;
@@ -165,6 +202,10 @@ export class Skater extends PContainer implements IHitbox{
             this.JumpIn = false;
             this.JumpOut = false;
             this.scale.set(1);
+
+            //Score
+            this.Score.LastTrick = 0;
+            this.Score.Scored = this.Score.Score;
 
         }else{
             this.accel.y = this.gravity;
@@ -188,28 +229,45 @@ export class Skater extends PContainer implements IHitbox{
         this.AS_Jump.play();
 
         if (this.onFall){
-            this.speed.x = -0.1 ;
-            this.worldspeed = 0.3;
+            //Score
+            this.Score.LastTrick = 5;
+
+            //Physics
+            if (this.speed.x > 0) this.speed.x -= 0.0003 * deltaTime;
+            if (this.speed.x < 0) this.speed.x = 0;
+            if (this.worldspeed > 0) this.worldspeed -= 0.001 * deltaTime;
+            if (this.worldspeed < 0) this.worldspeed = 0;
+            
+            //States
             this.centered = false;
-            if (this.AS_Fall.currentFrame == 4){
+            if (this.AS_Fall.currentFrame == 10){
                 this.reset = true;
                 this.onFall = false;
             }
             this.onGround = true;
+
+            //Animation
             this.removeChild(this.AS_Run);
             this.removeChild(this.AS_Jump);
             this.removeChild(this.AS_Grind);
             this.removeChild(this.AS_Flip);
             this.addChild(this.AS_Fall);
             this.AS_Fall.play();
+
+            //Sounds
+            if(!this.fall.isPlaying && this.AS_Fall.currentFrame < 2){
+                this.fall.play();
+                this.roll.stop();
+                this.grind.stop();
+            }
         }
         
         if (this.onFlip){
-            
             this.AS_Flip.play();
             if (this.AS_Flip.currentFrame == 2 ){
                 this.onFlip = false;
             }
+            if (!this.flip.isPlaying) this.flip.play();
         }
 
         if ( this.speed.y > 0 && (this.JumpIn || this.JumpOut )){ //fix?
@@ -221,6 +279,9 @@ export class Skater extends PContainer implements IHitbox{
             this.removeChild(this.AS_Grind);
             this.removeChild(this.AS_Flip);
             this.addChild(this.AS_Run);
+
+            //sounds
+            if(!this.roll.isPlaying) this.roll.play();
         }
 
         if (this.onPlat && !this.onGrind && !this.onFall){ //RunOnPlat
@@ -266,11 +327,18 @@ export class Skater extends PContainer implements IHitbox{
             this.removeChild(this.AS_Jump);
             this.removeChild(this.AS_Flip);
             this.addChild(this.AS_Grind);
+
         }
     }
     private onKeyQ():void{
-        if (this.JumpIn || this.JumpOut){
+        if (this.JumpIn || this.JumpOut && !this.onFlip){
+            //Score
+            this.Score.LastTrick = 2;
+
+            //States
             this.onFlip = true;
+
+            //Animations
             this.AS_Flip.currentFrame = 0;
             this.removeChild(this.AS_Run);
             this.removeChild(this.AS_Jump);
@@ -285,6 +353,9 @@ export class Skater extends PContainer implements IHitbox{
             this.speed.y = -this.JumpSpeed - Math.abs((this.speed.x) * 0.5);
             this.position.y -= 5;
 
+            //Score
+            this.Score.LastTrick = 1;
+
             //States    
             this.JumpIn = true;
             this.JumpOut = false;
@@ -298,6 +369,11 @@ export class Skater extends PContainer implements IHitbox{
 
             //Score
             this.Score.LastTrick = 1;
+
+            //Sound
+            this.roll.stop();
+            this.grind.stop();
+            this.jump.play();
         }
         if (this.onPlat && !this.onFlip){
             //Physics
@@ -318,6 +394,11 @@ export class Skater extends PContainer implements IHitbox{
 
             //Score
             this.Score.LastTrick = 1;
+
+            //Sound
+            this.roll.stop();
+            this.grind.stop();
+            this.jump.play();
         }
     }
 
@@ -328,6 +409,13 @@ export class Skater extends PContainer implements IHitbox{
                     //Physics
                     this.speed.y = 0;
                     this.position.y -= c.height - 1;
+
+                    //Score
+                    if (this.onGrind){
+                        this.Score.LastTrick = 3;
+                        this.Score.Score += 1;
+                        if (!this.grind.isPlaying) this.grind.play();
+                    }
 
                     //States
                     this.onPlat = true;
@@ -346,13 +434,4 @@ export class Skater extends PContainer implements IHitbox{
     public getHitbox():Rectangle{
         return this.hitbox.getBounds();
     }
-}
-
-export class Score{
-    Score:number = 0;
-    Timer:number = 0.0;
-    Stars:number = 0;
-    Tries:number = 3;
-    KQuitos:number = 0;
-    LastTrick:number = 0; //0 - none | 1 - Ollie | 2 - Flip | 3 - Grind | 4 - KillQuito
 }

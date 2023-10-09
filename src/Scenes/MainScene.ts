@@ -4,15 +4,18 @@ import { checkCollision } from "../Types/Interfaces/IHitbox";
 import { SceneBase } from "./SceneBase";
 import { SceneManager } from "./SceneManager";
 import { Obstaculo } from "../Types/MapMaker";
-import { Score, Skater } from "../Types/Personaje";
-import { Banco } from "../Types/Banco";
-import { Fuente } from "../Types/Fuente";
-import { Pilar } from "../Types/Pilar";
-import { BolaT } from "../Types/BolaTransito";
-import { Bicicletero } from "../Types/Bicicletero";
+import { Skater } from "../Types/Personaje";
+import { Banco } from "../Types/Obstaculos/Banco";
+import { Fuente } from "../Types/Obstaculos/Fuente";
+import { Pilar } from "../Types/Obstaculos/Pilar";
+import { BolaT } from "../Types/Obstaculos/BolaTransito";
+import { Bicicletero } from "../Types/Obstaculos/Bicicletero";
 
 import * as mosParticle from "../mosquitos.json";
 import { Sound } from "@pixi/sound";
+import { GameUI, Score } from "../Types/Score";
+import { MenuScene } from "./MenuScene";
+import { Pozo } from "../Types/Obstaculos/Pozo";
 
 export class MainScene extends SceneBase{
 
@@ -32,6 +35,7 @@ export class MainScene extends SceneBase{
     bancos: Obstaculo[];
     score: Score;
     music: Sound;
+    GameUI: GameUI;
 
     constructor(score:Score, music:Sound){
         super();
@@ -98,15 +102,22 @@ export class MainScene extends SceneBase{
 
         const bicic1 = new Bicicletero();
         bicic1.position.x = 750;
-        bicic1.position.y = this.ground - 16;
+        bicic1.position.y = this.ground;
         this.addChild(bicic1);
         this.bancos.push(bicic1);
         
         const bola1 = new BolaT();
         bola1.position.x = 100;
-        bola1.position.y = this.ground - 16;
+        bola1.position.y = this.ground + 20;
         this.addChild(bola1);
         this.bancos.push(bola1);
+
+        const pozo1 = new Pozo();
+        pozo1.scale.set(0.7);
+        pozo1.position.x = 500;
+        pozo1.position.y = this.ground + 80;
+        this.addChild(pozo1);
+        this.bancos.push(pozo1);
 
         this.Skater1 = new Skater(this.score);
         this.addChild(this.Skater1);
@@ -118,13 +129,16 @@ export class MainScene extends SceneBase{
         const pilar1 = new Pilar();
         pilar1.scale.set(0.75);
         pilar1.position.x = 2000;
-        pilar1.position.y = this.ground + 64;
+        pilar1.position.y = this.ground + 48;
         this.addChild(pilar1);
         this.bancos.push(pilar1);
 
         this.contMoscos.position.set(SceneManager.WX+100,this.ground);
         this.addChild(this.contMoscos);
 
+        //UI
+        this.GameUI = new GameUI(this.score);
+        this.addChild(this.GameUI);
 
         //Sounds
     }
@@ -134,11 +148,10 @@ export class MainScene extends SceneBase{
         if (this.Skater1.reset){
             this.Skater1.reset = false;
             this.score.Tries -= 1;
-            console.log(this.score.Tries);
 
             if (this.score.Tries < 0){
                 this.music.stop();
-                SceneManager.end();
+                SceneManager.changeScene(new MenuScene(this.score));
                 return;
             }else{
                 SceneManager.changeScene(new MainScene(this.score, this.music));
@@ -184,5 +197,8 @@ export class MainScene extends SceneBase{
         
         //PlayerLogic
         this.Skater1.update(deltaTime, deltaFrame);
+
+        //UI
+        this.GameUI.update(deltaTime, deltaFrame);
     }
 }

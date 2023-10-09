@@ -8,7 +8,7 @@ export namespace SceneManager{
 
     export const WX = 1280;
     export const WY = 720;
-    export const showHitBox = 0.01;
+    export const showHitBox = 0.1;
     
 
     export function initialize(){
@@ -21,7 +21,7 @@ export namespace SceneManager{
             view: document.getElementById("pixi-canvas") as HTMLCanvasElement,
             resolution: window.devicePixelRatio || 1,
             autoDensity: true,
-            backgroundColor: 0x6495ed,
+            backgroundColor: 0xccba35,
             width: WX,
             height: WY,
         });

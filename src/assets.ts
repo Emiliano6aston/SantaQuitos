@@ -34,15 +34,13 @@ export const assets = {
      SkateAnim18: "/SkaterSkate/Skater_Anim18.png",
  
      //UI
-     UI_panel: "./UI/UI_panel.png",
-     B_empty: "./UI/b_empty.png",
-     B_start: "./UI/b_start.png",
-     B_exit: "./UI/b_exit.png",
-     B_home: "./UI/b_home.png",
-     B_return: "./UI/b_return.png",
-     I_star: "./UI/i_star.png",
-     Im_nivel: "./UI/im_nivelcomp.png",
-     Im_stars: "./UI/im_stars.png",
+     B_basic: "./UI/Fondo.png",
+     B_over: "./UI/Fondow.png",
+     B_press: "./UI/Fondoy.png",
+     B_long:  "./UI/Fondo2.png",
+     B_fondo: "./UI/Fondo3.png",
+     B_marco: "./UI/Recuadro.png",
+
  
      //Mosquito
      Mosco1: "./Mosquito/mosco0.png",
@@ -58,6 +56,7 @@ export const assets = {
      Pilar1: "./Objetos/Pilar1.png",
      Bicic1: "./Objetos/Bicicletero.png",
      Bola1: "./Objetos/BolaTransito.png",
+     Pozo1: "./Objetos/Pozo.png",
 
      //Fondos
      Baldosas1: "./Fondos/Baldosas.png",
@@ -69,4 +68,11 @@ export const assets = {
 
      //Sounds
      SantaFe1: "./MusicSound/Cerveza Santa Fe - Himno (Yo soy de Santa Fe) (320 kbps).mp3",
+     SantaFe2: "./MusicSound/ParaSiempre.mp3",
+     roll: "./MusicSound/Sounds/Rolling.ogg",
+     jump: "./MusicSound/Sounds/Jump2.ogg",
+     fall: "./MusicSound/Sounds/Jump.ogg",
+     land: "./MusicSound/Sounds/Land.ogg",
+     flip: "./MusicSound/Sounds/Flip.ogg",
+     grind: "./MusicSound/Sounds/Grind.ogg"
 };
