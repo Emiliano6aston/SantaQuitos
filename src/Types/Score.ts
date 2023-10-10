@@ -1,7 +1,7 @@
 import { Container, Sprite, Text, TextStyle } from "pixi.js";
 import { IUpdate } from "./Interfaces/IUpdate";
 import { SceneManager } from "../Scenes/SceneManager";
-import { TextUp } from "../UI/TextUp";
+//import { TextUp } from "../UI/TextUp";
 
 export class Score{
     Mapa:string = "Federal";
@@ -39,7 +39,8 @@ export class GameUI extends Container implements IUpdate{
     fondo3: Sprite;
     Marco: Sprite;
     fondo4: Sprite;
-    T_counter: TextUp;
+    T_tuto: Text;
+    //T_counter: TextUp;
     constructor(score:Score){
         super();
 
@@ -63,6 +64,13 @@ export class GameUI extends Container implements IUpdate{
             fontFamily:"gomarice_simple_slum",
             strokeThickness: 1.0,
             fontSize:32,
+            fill: "White",
+        });
+
+        const Swhite2 = new TextStyle({
+            fontFamily:"gomarice_simple_slum",
+            strokeThickness: 1.0,
+            fontSize:16,
             fill: "White",
         });
 
@@ -116,6 +124,11 @@ export class GameUI extends Container implements IUpdate{
         this.T_score.position.y = 140;
         this.addChild(this.T_score);
 
+        this.T_tuto = new Text("Saltar -> Escape | A-D -> Moverse | Q -> Flip | E -> Grindear", Swhite2);
+        this.T_tuto.position.x = SceneManager.WX - this.T_tuto.width - 32;
+        this.T_tuto.position.y = 80;
+        this.addChild(this.T_tuto);
+
         this.T_mili = new Text(this.score.Timer.toString(), Swhite);
         this.T_mili.position.x = SceneManager.WX - 128;
         this.T_mili.position.y = 32;
@@ -130,10 +143,10 @@ export class GameUI extends Container implements IUpdate{
         this.addChild(this.T_sec);
         this.addChild(this.T_min);
 
-        this.T_counter = new TextUp("");
-        this.T_counter.position.x = SceneManager.WX - this.T_counter.width - 128;
-        this.T_counter.position.y = 128;
-        this.addChild(this.T_counter);
+        // this.T_counter = new TextUp("");
+        // this.T_counter.position.x = SceneManager.WX - this.T_counter.width - 128;
+        // this.T_counter.position.y = 128;
+        // this.addChild(this.T_counter);
 
     }
 
@@ -156,7 +169,7 @@ export class GameUI extends Container implements IUpdate{
         deltaTime;
         this.time();
 
-        this.T_counter.update(deltaTime, _deltaFrame);
+        //this.T_counter.update(deltaTime, _deltaFrame);
 
     }
 

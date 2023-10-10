@@ -61,9 +61,10 @@ export class Mapa extends Container implements IUpdate{
             this.set(banco2);
 
             const especial1 = new Cartel();
-            especial1.scale.set(0.5);
-            especial1.position.y = this.ground;
-            especial1.startp = 1700;
+            especial1.scale.x = 0.5;
+            especial1.scale.y = 0.4;
+            especial1.position.y = this.ground - 32;
+            especial1.startp = 1800;
             this.set(especial1);
 
             const bicic1 = new Bicicletero();
@@ -74,7 +75,7 @@ export class Mapa extends Container implements IUpdate{
             this.f_obst = this.Obstaculos.length;
             this.sp = true;
             this.endwave = 0;
-            this.faset = 7;
+            this.faset = 3;
             this.nextmap = "End"
         }
     }

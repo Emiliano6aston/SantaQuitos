@@ -182,7 +182,13 @@ export class Skater extends PContainer implements IHitbox{
         this.Score.Timer += deltaTime;
         if (this.Score.LastTrick != this.lastrick){
             this.lastrick = this.Score.LastTrick;
-            this.Score.Score += this.Score.Points[this.lastrick];
+            if (this.lastrick != this.Score.TrickRep) {
+                this.Score.TrickRep = this.lastrick;
+            }else{
+                this.Score.TrickRep = this.lastrick;
+                this.Score.Score += this.Score.Points[this.lastrick];
+            }
+
         }
         if (!this.onGround && !this.onGrind && !this.onPlat) this.Score.Score += 1;
 
@@ -228,7 +234,8 @@ export class Skater extends PContainer implements IHitbox{
 
             //Score
             this.Score.LastTrick = 0;
-            this.Score.Scored = this.Score.Score;
+            this.Score.Scored += this.Score.Score;
+            this.Score.Score = 0;
 
         }else{
             this.accel.y = this.gravity;
@@ -333,7 +340,6 @@ export class Skater extends PContainer implements IHitbox{
         if ((this.onGround || this.onPlat) && !this.onGrind){
             this.speed.x = -0.4;
             this.centered = false;
-
             this.vroll();
         }
     }
@@ -342,7 +348,6 @@ export class Skater extends PContainer implements IHitbox{
         if ((this.onGround || this.onPlat) && !this.onGrind){
             this.speed.x = 0.4;
             this.centered = false;
-
             this.vroll();
         }
     }
