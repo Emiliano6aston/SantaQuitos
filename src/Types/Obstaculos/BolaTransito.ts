@@ -5,7 +5,6 @@ export class BolaT extends Obstaculo{
     constructor(){
         super("Bola", "Bola1", 3);
 
-        this.removeChild(this.hitbox);
         this.hitbox.beginFill(0xFF00FF, SceneManager.showHitBox);
         this.hitbox.drawRect(80,0,32,16);
         this.hitbox.endFill();

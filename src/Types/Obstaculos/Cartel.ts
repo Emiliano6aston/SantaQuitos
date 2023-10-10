@@ -1,16 +1,15 @@
 import { SceneManager } from "../../Scenes/SceneManager";
 import { Obstaculo } from "../Obstaculo";
 
-export class Pilar extends Obstaculo{
+export class Cartel extends Obstaculo{
     constructor(){
-        super("Pilar", "Pilar1", 2);
+        super("Cartel", "Cartel1", 1);
 
         this.hitbox.beginFill(0xFF00FF, SceneManager.showHitBox);
-        this.hitbox.drawRect(70,-50,60,160);
+        this.hitbox.drawRect(0,0,200,16);
         this.hitbox.endFill();
         this.hitbox.x = -96;
-        this.hitbox.y = -8;
+        this.hitbox.y = -128;
         this.addChild(this.hitbox);
-
     }
 }

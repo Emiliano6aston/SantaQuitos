@@ -5,6 +5,7 @@ import { IHitbox } from "./Interfaces/IHitbox";
 import { SceneManager } from "../Scenes/SceneManager";
 import { Score } from "./Score";
 import { Sound, filters, sound } from "@pixi/sound";
+import { Obstaculo } from "./Obstaculo";
 
 export class Skater extends PContainer implements IHitbox{
     //Actions
@@ -437,8 +438,8 @@ export class Skater extends PContainer implements IHitbox{
         }
     }
 
-    public checkCollision(c:any, b:any):void{
-        if ( c != null){
+    public checkCollision(c:Rectangle, b:Obstaculo):void{
+        if ( c != null && b != null){
             if (b.tipo != 2 && (this.JumpIn || this.JumpOut || this.onGrind || !this.onPlat || !this.onFall)){
                 if (this.speed.y > 0 && this.position.y < (b.position.y + c.height)){
                     //Physics
@@ -459,9 +460,11 @@ export class Skater extends PContainer implements IHitbox{
             }
             if (b.tipo == 2 && !this.onGround){
                 this.onFall = true;
+                console.log(b.nombre);
             }
             if (b.tipo == 3){
                 this.onFall = true;
+                console.log(b.nombre);
             }
         }
     }

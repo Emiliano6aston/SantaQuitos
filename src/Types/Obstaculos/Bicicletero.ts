@@ -5,7 +5,6 @@ export class Bicicletero extends Obstaculo{
     constructor(){
         super("Bicicletero", "Bicic1", 2);
 
-        this.removeChild(this.hitbox);
         this.hitbox.beginFill(0xFF00FF, SceneManager.showHitBox);
         this.hitbox.drawRect(64,-20,30,20);
         this.hitbox.endFill();

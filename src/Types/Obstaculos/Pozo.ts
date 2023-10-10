@@ -5,7 +5,6 @@ export class Pozo extends Obstaculo{
     constructor(){
         super("Pozo", "Pozo1", 3);
 
-        this.removeChild(this.hitbox);
         this.hitbox.beginFill(0xFF00FF, SceneManager.showHitBox);
         this.hitbox.drawRect(0,0,16,32);
         this.hitbox.endFill();
