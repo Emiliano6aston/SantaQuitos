@@ -158,8 +158,6 @@ export class GameUI extends Container implements IUpdate{
 
         this.T_counter.update(deltaTime, _deltaFrame);
 
-        if (this.)
-
     }
 
 }
