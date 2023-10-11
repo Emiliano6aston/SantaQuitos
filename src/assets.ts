@@ -1,18 +1,5 @@
 export const assets = {
 
-     // //Player
-     // Skater1: "./Skater/Skater_run0.png",
-     // Skater2: "./Skater/Skater_run1.png",
-     // Skater3: "./Skater/Skater_run2.png",
-     // Skater4: "./Skater/Skater_run3.png",
-     // Skater5: "./Skater/Skater_run4.png",
-
-     // //Skate
-     // Skate1: "./SkateAnim/Skate_run0.png",
-     // Skate2: "./SkateAnim/Skate_run1.png",
-     // Skate3: "./SkateAnim/Skate_run2.png",
-     // Skate4: "./SkateAnim/Skate_run3.png",
-
      SkateAnim0: "/SkaterSkate/Skater_Anim00.png",
      SkateAnim1: "/SkaterSkate/Skater_Anim01.png",
      SkateAnim2: "/SkaterSkate/Skater_Anim02.png",
