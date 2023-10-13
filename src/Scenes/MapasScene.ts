@@ -4,7 +4,7 @@ import { SceneBase } from "./SceneBase";
 import { SceneManager } from "./SceneManager";
 import { Skater } from "../Types/Personaje";
 import * as mosParticle from "../mosquitos.json";
-import { Sound, sound } from "@pixi/sound";
+import { sound } from "@pixi/sound";
 import { GameUI, Score } from "../Types/Score";
 import { MenuScene } from "./MenuScene";
 import { Mapa } from "../Types/MapMaker";
@@ -28,16 +28,14 @@ export class MapasScene extends SceneBase{
     contMoscos: Container;
     //bancos: Obstaculo[];
     score: Score;
-    music: Sound;
     GameUI: GameUI;
     Mapa: Mapa;
 
     constructor(score:Score){
         super();
 
-        this.music = sound.find("SantaFe2");
-        this.music.volume = 0.1;
-        this.music.play();
+        sound.find("SantaFe2").volume = 0.01;
+        if (!sound.find("SantaFe2").isPlaying) sound.find("SantaFe2").play();
 
         this.score = score;
         //Constantes
@@ -100,7 +98,7 @@ export class MapasScene extends SceneBase{
         Keyboard.down.on("Escape", this.onKeyEsc, this);
     }
     onKeyEsc() {
-        this.music.stop();
+        sound.find("SantaFe2").stop();
         SceneManager.changeScene(new MenuScene(new Score));
     }
 
@@ -116,16 +114,17 @@ export class MapasScene extends SceneBase{
             this.score.Tries -= 1;
 
             if (this.score.Tries < 0){
-                this.music.destroy();
+                sound.find("SantaFe2").stop();
                 SceneManager.changeScene(new EndScene(this.score));
                 return;
             }else{
+                sound.find("SantaFe2").stop();
                 SceneManager.changeScene(new MapasScene(this.score));
             }
         }
 
         if (this.Mapa.finished){
-            this.music.destroy();
+            sound.find("SantaFe2").stop();
             SceneManager.changeScene(new EndScene(this.score));
         }
 

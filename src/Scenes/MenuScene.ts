@@ -1,4 +1,4 @@
-import { Sound, sound } from "@pixi/sound";
+import { sound } from "@pixi/sound";
 import { SceneBase } from "./SceneBase";
 import { Score } from "../Types/Score";
 import { SceneManager } from "./SceneManager";
@@ -11,7 +11,6 @@ import { ProtoScene } from "./ProtoScene";
 export class MenuScene extends SceneBase{
     a: number = 0;
     b: number = 0;
-    musicMenu: Sound;
 
     inGame:boolean = false;
     inMenu:boolean = true;
@@ -25,10 +24,8 @@ export class MenuScene extends SceneBase{
 
     constructor(score:Score){
         super();
-        this.musicMenu = sound.find("SantaFe1");
-	    this.musicMenu.volume = 0.1;
-	    this.musicMenu.loop = false;
-	    this.musicMenu.play();
+        if (!sound.find("SantaFe1").isPlaying) sound.find("SantaFe1").play();
+	    sound.find("SantaFe1").volume = 0.1;
 
 	    this.score = score;
 
@@ -44,6 +41,7 @@ export class MenuScene extends SceneBase{
         this.BPlay.on("mousedown", this.onPlay, this);
         this.BPlay.on("mouseover", this.BPlay.over, this.BPlay);
         this.BPlay.on("mouseleave", this.BPlay.nover, this.BPlay);
+        this.BPlay.on("touchstart", this.onPlay, this);
 
         
         this.BPlay2 = new button('Proto');
@@ -52,6 +50,7 @@ export class MenuScene extends SceneBase{
         this.BPlay2.on("mousedown", this.onProto, this);
         this.BPlay2.on("mouseover", this.BPlay2.over, this.BPlay2);
         this.BPlay2.on("mouseleave", this.BPlay2.nover, this.BPlay2);
+        this.BPlay2.on("touchstart", this.onProto, this);
 
         const SPainter = new TextStyle({
             fontFamily:"Painterz",
@@ -84,7 +83,7 @@ export class MenuScene extends SceneBase{
 
         if (this.inGame){
             this.score.reset();
-            this.musicMenu.stop();
+            sound.find("SantaFe1").stop();
             SceneManager.changeScene(new MapasScene(this.score));
         }
     }
@@ -101,7 +100,7 @@ export class MenuScene extends SceneBase{
         this.score.Tries = 5;
         this.inMenu = false;
         this.inGame = true;
-        this.musicMenu.stop();
+        sound.find("SantaFe1").stop();
         SceneManager.changeScene(new ProtoScene(this.score));
     }
 

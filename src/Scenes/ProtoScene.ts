@@ -11,7 +11,7 @@ import { BolaT } from "../Types/Obstaculos/BolaTransito";
 import { Bicicletero } from "../Types/Obstaculos/Bicicletero";
 
 //import * as mosParticle from "../mosquitos.json";
-import { Sound, sound } from "@pixi/sound";
+import { sound } from "@pixi/sound";
 import { GameUI, Score } from "../Types/Score";
 import { MenuScene } from "./MenuScene";
 import { Pozo } from "../Types/Obstaculos/Pozo";
@@ -35,15 +35,13 @@ export class ProtoScene extends SceneBase{
     //contMoscos: Container;
     bancos: Obstaculo[];
     score: Score;
-    music: Sound;
     GameUI: GameUI;
 
     constructor(score:Score){
         super();
 
-        this.music = sound.find("SantaFe1");
-        this.music.volume = 0.1;
-        this.music.play();
+        if (!sound.find("SantaFe1").isPlaying) sound.find("SantaFe1").play();
+        sound.find("SantaFe1").volume = 0.1;
 
         this.score = score;
         //Constantes
@@ -148,7 +146,7 @@ export class ProtoScene extends SceneBase{
         Keyboard.down.on("Escape", this.onKeyEsc, this);
     }
     onKeyEsc(){
-        this.music.stop();
+        sound.find("SantaFe1").stop();
         SceneManager.changeScene(new MenuScene(new Score));
     }
 
@@ -159,11 +157,10 @@ export class ProtoScene extends SceneBase{
             this.score.Tries -= 1;
 
             if (this.score.Tries < 0){
-                this.music.stop();
+                sound.find("SantaFe1").stop();
                 SceneManager.changeScene(new MenuScene(this.score));
                 return;
             }else{
-                this.music.stop();
                 SceneManager.changeScene(new ProtoScene(this.score));
             }
         }

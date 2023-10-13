@@ -337,7 +337,7 @@ export class Skater extends PContainer implements IHitbox{
     }
 
     private onKeyA():void{
-        if ((this.onGround || this.onPlat) && !this.onGrind){
+        if ((this.onGround || this.onPlat) && !this.onGrind && !this.onFall){
             this.speed.x = -0.4;
             this.centered = false;
             this.vroll();
@@ -345,7 +345,7 @@ export class Skater extends PContainer implements IHitbox{
     }
 
     private onKeyD():void{
-        if ((this.onGround || this.onPlat) && !this.onGrind){
+        if ((this.onGround || this.onPlat) && !this.onGrind && !this.onFall){
             this.speed.x = 0.4;
             this.centered = false;
             this.vroll();
@@ -353,8 +353,7 @@ export class Skater extends PContainer implements IHitbox{
     }
 
     private onKeyE():void{
-
-        if (this.JumpIn || this.JumpOut || !this.onFlip){
+        if ((this.JumpIn || this.JumpOut) &&!this.onFlip && !this.onFall){
             //Physics
             this.speed.y = 0;
 
@@ -372,7 +371,7 @@ export class Skater extends PContainer implements IHitbox{
         }
     }
     private onKeyQ():void{
-        if (this.JumpIn || this.JumpOut && !this.onFlip){
+        if ((this.JumpIn || this.JumpOut && !this.onFlip) && !this.onFall){
             //Score
             this.Score.LastTrick = 2;
 
@@ -389,7 +388,7 @@ export class Skater extends PContainer implements IHitbox{
     }
 
     private onJump():void{
-        if (this.onGround && !this.onFlip){
+        if (this.onGround && !this.onFlip && !this.onFall){
             //Physics
             this.speed.y = -this.JumpSpeed - Math.abs((this.speed.x) * 0.5);
             this.position.y -= 5;
@@ -416,7 +415,7 @@ export class Skater extends PContainer implements IHitbox{
             this.grind.stop();
             this.jump.play();
         }
-        if (this.onPlat && !this.onFlip){
+        if (this.onPlat && !this.onFlip && !this.onFall){
             //Physics
             this.speed.y = -this.JumpSpeed - Math.abs((this.speed.x) * 0.5);
             this.position.y -= 5;
